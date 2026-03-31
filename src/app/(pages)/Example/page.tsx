@@ -1,30 +1,30 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 
 export default function Home() {
     // Essas constantes só podem ter valores atribuídos à elas usando set
     // Exemplo: certo -> setCount(1)
     //          errado -> count = 1
-    const [count, setCount] = useState(0);
-    const [message, setMessage] = useState("Carregando...");
+    const [count, setCount] = useState(0)
+    const [message, setMessage] = useState("Carregando...")
 
     useEffect(() => {
-        console.log("Página carregada!");
+        console.log("Página carregada!")
 
         setTimeout(() => {
             // Usando setMessage
-            setMessage("Página carregada com sucesso!");
-        }, 2000);
-    }, []); // [] = executa quando carrega/recarrega a página
+            setMessage("Página carregada com sucesso!")
+        }, 2000)
+    }, []) // [] = executa quando carrega/recarrega a página
 
     useEffect(() => {
-        console.log(`Contador atualizado: ${count}`);
-    }, [count]); // executa sempre que count muda
+        console.log(`Contador atualizado: ${count}`)
+    }, [count]) // executa sempre que count muda
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
-            <main className="bg-white shadow-md rounded-2xl p-10 max-w-xl w-full text-center">
+        <main className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
+            <div className="bg-white shadow-md rounded-2xl p-10 max-w-xl w-full text-center">
                 <h1 className="text-2xl font-bold mb-4 text-black">
                     Exemplo de página com useState e useEffect
                 </h1>
@@ -63,7 +63,7 @@ export default function Home() {
                         className="border border-teal-400 text-black p-2 rounded-lg w-full"
                     />
                 </div>
-            </main>
-        </div>
-    );
+            </div>
+        </main>
+    )
 }
