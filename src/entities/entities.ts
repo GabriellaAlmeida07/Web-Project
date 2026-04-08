@@ -11,17 +11,38 @@ import fone from "@/assets/fone.png";
 import garrafa from "@/assets/garrafa.png";
 
 export type ProdutoProps = {
+    id: string;
     nome: string;
-    img: StaticImageData;
+    img?: StaticImageData;
     desc: string;
     qtd_disp: number;
     preco_venda: number;
-    avaliacao: number; // De 0-5
+    avaliacao?: number; // De 0-5
 };
+
+export type Props = ProdutoProps & {
+    quantidade: number;
+    onChangeQtd: (novaQtd: number) => void;
+};
+
+export type ProdAssociado = {
+    prod_id: string; // Talvez precise no bd
+    qtd: number;
+    preco_venda: number;
+};
+
+export interface Pedido {
+    id: string;
+    prods_associados: ProdAssociado[];
+    valor_total: number;
+    id_cliente: string; // Para acessar nome, email...
+    data_registro?: string; // Data de quando o pedido foi criado/cadastrado
+}
 
 // Produtos fake (somente para essa parte inicial sem BD)
 export const prods_fake: ProdutoProps[] = [
     {
+        id: "001",
         nome: "Camiseta Básica",
         img: camiseta,
         desc: "100% algodão",
@@ -30,6 +51,7 @@ export const prods_fake: ProdutoProps[] = [
         avaliacao: 4,
     },
     {
+        id: "002",
         nome: "Tênis Esportivo",
         img: tenis,
         desc: "Super confortável",
@@ -38,7 +60,8 @@ export const prods_fake: ProdutoProps[] = [
         avaliacao: 5,
     },
     {
-        nome: "Mochila",
+        id: "003", 
+        nome: "Mochila de nome grande para teste",
         img: mochila,
         desc: "Ajustável",
         qtd_disp: 8,
@@ -46,6 +69,7 @@ export const prods_fake: ProdutoProps[] = [
         avaliacao: 3,
     },
     {
+        id: "004",
         nome: "Boné Street",
         img: bone,
         desc: "Ajustável",
@@ -54,6 +78,7 @@ export const prods_fake: ProdutoProps[] = [
         avaliacao: 4,
     },
     {
+        id: "005",
         nome: "Relógio",
         img: relogio,
         desc: "Relógio casual",
@@ -62,6 +87,7 @@ export const prods_fake: ProdutoProps[] = [
         avaliacao: 4,
     },
     {
+        id: "006",
         nome: "Jaqueta Jeans",
         img: jaqueta,
         desc: "Estilo moderno",
@@ -70,6 +96,7 @@ export const prods_fake: ProdutoProps[] = [
         avaliacao: 5,
     },
     {
+        id: "007",
         nome: "Óculos de Sol",
         img: oculos,
         desc: "Proteção UV",
@@ -78,6 +105,7 @@ export const prods_fake: ProdutoProps[] = [
         avaliacao: 3,
     },
     {
+        id: "008",
         nome: "Carteira Couro",
         img: carteira,
         desc: "Compacta",
@@ -86,6 +114,7 @@ export const prods_fake: ProdutoProps[] = [
         avaliacao: 4,
     },
     {
+        id: "009",
         nome: "Fone Bluetooth",
         img: fone,
         desc: "Sem fio",
@@ -94,6 +123,7 @@ export const prods_fake: ProdutoProps[] = [
         avaliacao: 5,
     },
     {
+        id: "010",
         nome: "Garrafa Térmica",
         img: garrafa,
         desc: "Mantém gelado/quente",
