@@ -1,6 +1,6 @@
 "use client";
 
-import { ProdutoProps } from "@/entities/entities";
+import { ProdutoProps, Props } from "@/entities/entities";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
@@ -12,20 +12,23 @@ export default function CardProduto({
     qtd_disp,
     preco_venda,
     avaliacao,
-}: ProdutoProps) {
+    quantidade,
+    onChangeQtd,
+}: Props) {
     // Parte lógica do código (javascript + useState + useEffect)
     const [digitando, setDigitando] = useState<string | null>(null);
-    const [quantidade, setQuantidade] = useState<number>(0);
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
     function diminuir() {
         if (quantidade > 0) {
-            setQuantidade(quantidade - 1);
+            onChangeQtd(quantidade - 1);
         }
     }
 
     function aumentar() {
-        setQuantidade(quantidade + 1);
+        if (quantidade < qtd_disp) {
+            onChangeQtd(quantidade + 1);
+        }
     }
 
     // Parte "html e css"
@@ -39,7 +42,7 @@ export default function CardProduto({
                 {/* Imagem */}
                 <div className="relative h-24 w-full">
                     <Image
-                        src={img}
+                        src={img!}
                         alt="Produto"
                         className="w-full h-24 cursor-pointer"
                         priority
@@ -68,7 +71,7 @@ export default function CardProduto({
                     </div>
                     <div className="flex items-center gap-1">
                         {[...Array(5)].map((_, i) =>
-                            avaliacao > i ? (
+                            avaliacao && avaliacao > i ? (
                                 <p key={i}>
                                     <FaStar />
                                 </p>
@@ -114,7 +117,7 @@ export default function CardProduto({
                                                 valor >= 0 &&
                                                 valor <= qtd_disp
                                             ) {
-                                                setQuantidade(valor);
+                                                onChangeQtd(valor);
                                             }
 
                                             setDigitando(null);
