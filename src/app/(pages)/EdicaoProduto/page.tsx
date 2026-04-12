@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image, { StaticImageData } from "next/image";
 import { ProdutoProps, prods_fake } from "@/entities/entities";
 import Link from "next/link";
-import { IoArrowBackOutline } from "react-icons/io5";
+import { IoArrowBackOutline, IoTrashOutline } from "react-icons/io5";
 import { useSearchParams } from "next/navigation";
 
 export default function EdicaoProduto() {
@@ -32,148 +32,104 @@ export default function EdicaoProduto() {
         }
     }, [idProduto]);
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        const name = e.target.name;
-        let value: any = e.target.value;
-
-        if (name === "qtd_disp" || name === "preco_venda") {
-            value = Number(value);
-        }
-
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
         setProduto({
             ...produto,
-            [name]: value,
+            [name]: name === "qtd_disp" || name === "preco_venda" ? Number(value) : value,
         });
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files) return;
-
-        const file = e.target.files[0];
-        if (!file) return;
-
-        setProduto({
-            ...produto,
-            img: URL.createObjectURL(file) as unknown as StaticImageData,
-        });
+        const file = e.target.files?.[0];
+        if (file) {
+            setProduto({
+                ...produto,
+                img: URL.createObjectURL(file) as unknown as StaticImageData,
+            });
+        }
     };
 
     const handleAtualizar = (e: React.FormEvent) => {
         e.preventDefault();
+        alert("Alterações salvas com sucesso! Verifique o console.");
         console.log("Produto atualizado:", produto);
-        alert("Alterações salvas! Veja no console.");
     };
 
     const handleExcluir = () => {
-        const confirmacao = window.confirm("ATENÇÃO: Deseja realmente excluir este produto?");
-        if (confirmacao) {
-            console.log("Excluindo produto ID:", produto.id);
+        // Confirmação de segurança para o Delete
+        if (window.confirm("ATENÇÃO: Deseja realmente excluir este produto?")) {
             alert("Produto excluído com sucesso!");
+            console.log("Excluindo produto ID:", produto.id);
         }
     };
 
+    const inputStyle = "border-2 border-gray-200 p-2 rounded-md outline-none focus:border-teal-500 transition-all bg-gray-50";
+
     return (
-        <main className="min-h-screen bg-gray-100 text-black flex items-center justify-center p-5">
-            <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg relative">
+        <main className="min-h-screen bg-[#F8F9FA] text-black flex items-center justify-center p-5 font-sans">
+            <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-lg relative border-t-8 border-teal-600">
                 
-                <Link href="/ProdutosAdmin" className="absolute top-6 left-6 text-gray-500 hover:text-teal-600 flex items-center gap-1 font-medium">
-                    <IoArrowBackOutline /> Voltar
+                {/* Navegação simples via Link */}
+                <Link href="/ProdutosAdmin" className="absolute top-6 left-6 text-gray-400 hover:text-teal-600 flex items-center gap-1 font-semibold transition-colors">
+                    <IoArrowBackOutline size={20} /> Voltar
                 </Link>
 
-                <h1 className="text-2xl font-bold mb-6 mt-8">Editar Produto</h1>
-                
-                <form onSubmit={handleAtualizar} className="space-y-4">
-                    <div className="flex flex-col">
-                        <label className="text-sm font-medium">ID do Produto (Não editável):</label>
-                        <input
-                            type="text"
-                            name="id"
-                            value={produto.id}
-                            disabled
-                            className="border p-2 rounded bg-gray-100 text-gray-500 cursor-not-allowed"
-                        />
+                <div className="text-center mb-8 mt-10">
+                    <h1 className="text-3xl font-extrabold text-gray-800">Editar Produto</h1>
+                    <p className="text-gray-500 text-sm">Modifique as informações do item selecionado</p>
+                </div>
+
+                <form onSubmit={handleAtualizar} className="space-y-5">
+                    <div className="flex flex-col gap-1">
+                        <label className="text-xs font-bold uppercase text-gray-400 ml-1">ID (Não editável)</label>
+                        <input type="text" name="id" value={produto.id} disabled className={`${inputStyle} opacity-60 cursor-not-allowed`} />
                     </div>
 
-                    <div className="flex flex-col">
-                        <label className="text-sm font-medium">Nome:</label>
-                        <input
-                            type="text"
-                            name="nome"
-                            value={produto.nome}
-                            onChange={handleChange}
-                            className="border p-2 rounded"
-                        />
+                    <div className="flex flex-col gap-1">
+                        <label className="text-xs font-bold uppercase text-gray-400 ml-1">Nome do Item</label>
+                        <input required type="text" name="nome" value={produto.nome} onChange={handleChange} className={inputStyle} />
                     </div>
 
-                    <div className="flex flex-col">
-                        <label className="text-sm font-medium">Descrição:</label>
-                        <textarea
-                            name="desc"
-                            value={produto.desc}
-                            onChange={handleChange}
-                            className="border p-2 rounded"
-                        />
+                    <div className="flex flex-col gap-1">
+                        <label className="text-xs font-bold uppercase text-gray-400 ml-1">Descrição</label>
+                        <textarea required name="desc" value={produto.desc} onChange={handleChange} className={`${inputStyle} h-24 resize-none`} />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium">Estoque:</label>
-                            <input
-                                type="number"
-                                name="qtd_disp"
-                                value={produto.qtd_disp}
-                                onChange={handleChange}
-                                className="border p-2 rounded"
-                                min={0}
-                            />
+                        <div className="flex flex-col gap-1">
+                            <label className="text-xs font-bold uppercase text-gray-400 ml-1">Estoque</label>
+                            <input required min={0} type="number" name="qtd_disp" value={produto.qtd_disp} onChange={handleChange} className={inputStyle} />
                         </div>
-
-                        <div className="flex flex-col">
-                            <label className="text-sm font-medium">Preço (R$):</label>
-                            <input
-                                type="number"
-                                name="preco_venda"
-                                value={produto.preco_venda}
-                                onChange={handleChange}
-                                className="border p-2 rounded"
-                                min={0}
-                                step={0.01}
-                            />
+                        <div className="flex flex-col gap-1">
+                            <label className="text-xs font-bold uppercase text-gray-400 ml-1">Preço (R$)</label>
+                            <input required min={0} step="0.01" type="number" name="preco_venda" value={produto.preco_venda} onChange={handleChange} className={inputStyle} />
                         </div>
                     </div>
 
-                    <div className="flex flex-col">
-                        <label className="text-sm font-medium">Imagem do Produto:</label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            className="border-2 border-pink-300 p-1 rounded"
-                            onChange={handleFileChange}
-                        />
-                        {produto.img && (
-                            <Image
-                                src={produto.img}
-                                alt="Preview"
-                                width={128}
-                                height={128}
-                                className="mt-2 w-32 h-32 object-cover rounded border"
-                            />
-                        )}
+                    <div className="flex flex-col gap-1">
+                        <label className="text-xs font-bold uppercase text-gray-400 ml-1">Imagem do Produto</label>
+                        <div className="flex items-center gap-4">
+                            <input type="file" accept="image/*" onChange={handleFileChange} className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer" />
+                            {produto.img && (
+                                <div className="relative w-16 h-16 rounded-lg overflow-hidden border-2 border-teal-200">
+                                    <Image src={produto.img} alt="Preview" fill className="object-cover" />
+                                </div>
+                            )}
+                        </div>
                     </div>
 
-                    <div className="flex gap-3 pt-4 border-t mt-4">
+                    <div className="flex gap-3 pt-6 border-t border-gray-100">
                         <button
                             type="button"
                             onClick={handleExcluir}
-                            className="w-1/3 bg-red-500 text-white py-2 rounded font-bold hover:bg-red-600 transition"
+                            className="w-1/3 bg-white text-red-500 border-2 border-red-500 py-3 rounded-xl font-bold hover:bg-red-50 transition-all flex items-center justify-center gap-2"
                         >
-                            Excluir
+                            <IoTrashOutline size={20} /> Excluir
                         </button>
                         <button
                             type="submit"
-                            className="w-2/3 bg-teal-600 text-white py-2 rounded font-bold hover:bg-teal-700 transition"
+                            className="w-2/3 bg-teal-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-teal-700 shadow-lg shadow-teal-100 transition-all active:scale-95"
                         >
                             Salvar Alterações
                         </button>
