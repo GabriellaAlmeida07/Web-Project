@@ -26,7 +26,7 @@ export type Props = ProdutoProps & {
 };
 
 export type ProdAssociado = {
-    prod_id: string; // Talvez precise no bd
+    prod_id: string; // Para encontrá-lo no bd
     qtd: number;
     preco_venda: number;
 };
@@ -36,8 +36,49 @@ export interface Pedido {
     prods_associados: ProdAssociado[];
     valor_total: number;
     id_cliente: string; // Para acessar nome, email...
-    data_registro?: string; // Data de quando o pedido foi criado/cadastrado
+    data_registro: string; // Data de quando o pedido foi criado/cadastrado
+    endereco_entrega: string;
 }
+
+export type PedidoProps = {
+    pedido: Pedido;
+};
+
+export const pedidosFake: Pedido[] = [
+    {
+        id: "1",
+        endereco_entrega: "Rua A, 123",
+        data_registro: "12/04/2026",
+        id_cliente: "1",
+        prods_associados: [
+            { prod_id: "003", qtd: 1, preco_venda: 129.9 },
+            { prod_id: "002", qtd: 1, preco_venda: 199.9 },
+        ],
+        valor_total: 329.8,
+    },
+    {
+        id: "2",
+        endereco_entrega: "Av. Brasil, 456",
+        data_registro: "11/04/2026",
+        id_cliente: "2",
+        prods_associados: [
+            { prod_id: "001", qtd: 2, preco_venda: 49.9 },
+            { prod_id: "004", qtd: 1, preco_venda: 39.9 },
+        ],
+        valor_total: 139.7,
+    },
+    {
+        id: "3",
+        endereco_entrega: "Rua das Flores, 789",
+        data_registro: "10/04/2026",
+        id_cliente: "3",
+        prods_associados: [
+            { prod_id: "006", qtd: 1, preco_venda: 159.9 },
+            { prod_id: "007", qtd: 1, preco_venda: 259.9 },
+        ],
+        valor_total: 419.8,
+    },
+];
 
 // Produtos fake (somente para essa parte inicial sem BD)
 export const prods_fake: ProdutoProps[] = [
@@ -60,7 +101,7 @@ export const prods_fake: ProdutoProps[] = [
         avaliacao: 5,
     },
     {
-        id: "003", 
+        id: "003",
         nome: "Mochila de nome grande para teste",
         img: mochila,
         desc: "Ajustável",

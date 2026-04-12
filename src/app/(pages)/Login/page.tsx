@@ -3,7 +3,6 @@
 import Link from "next/link";
 
 export default function Login() {
-    // Parte lógica do código
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
         console.log("Tentativa de login via e-mail e senha...");
@@ -22,11 +21,11 @@ export default function Login() {
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-gray-800">Acesso Restrito</h1>
                     <p className="text-sm text-gray-500 mt-2">
-                        Entre para gerenciar a loja.
+                        Entre para acessar a loja.
                     </p>
                 </div>
 
-                {/* Formulário Tradicional */}
+                {/* Formulário */}
                 <form className="flex flex-col gap-5" onSubmit={handleLogin}>
                     
                     <div className="flex flex-col gap-1">
@@ -84,7 +83,7 @@ export default function Login() {
                     Entrar com o Google
                 </button>
 
-                {/* Rodapé com Link de Cadastro */}
+                {/* Rodapé com link de redirecionamento para Cadastro */}
                 <div className="text-center mt-4 text-sm text-gray-600">
                     Não tem uma conta?{' '}
                     <Link href="/Cadastro" className="text-teal-600 font-semibold hover:underline">

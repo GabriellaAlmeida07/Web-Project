@@ -11,7 +11,6 @@ export default function Cadastro() {
     return (
         <main className="min-h-screen bg-[#FDF6F6] text-black flex items-center justify-center p-4 py-10">
             
-            {/* Voltamos para max-w-md para ficar fino e elegante igual ao login */}
             <div className="w-full max-w-md bg-white border border-teal-400 rounded-xl shadow-lg p-8 flex flex-col gap-6">
                 
                 <div className="text-center">
@@ -23,7 +22,7 @@ export default function Cadastro() {
 
                 <form className="flex flex-col gap-4" onSubmit={handleRegister}>
                     
-                    {/* Todos os campos agora ficam um embaixo do outro, sem grid */}
+                    {/* Todos os campos ficam um embaixo do outro (flex-col) */}
                     <div className="flex flex-col gap-1">
                         <label htmlFor="nome" className="ml-1 text-sm font-medium text-gray-700">
                             Nome Completo
@@ -128,6 +127,7 @@ export default function Cadastro() {
 
                 <div className="text-center mt-2 text-sm text-gray-600">
                     Já tem uma conta?{' '}
+                    {/* Permite redirecionar para outra página */}
                     <Link href="/Login" className="text-teal-600 font-semibold hover:underline">
                         Faça login
                     </Link>
