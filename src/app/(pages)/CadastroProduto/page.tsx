@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Image, { StaticImageData } from "next/image";
 import { ProdutoProps } from "@/entities/entities";
+import Link from "next/link";
+import { IoArrowBackOutline } from "react-icons/io5";
 
 export default function CadastroProduto() {
     // Produto que será "preenchido" no cadastro
@@ -19,7 +21,7 @@ export default function CadastroProduto() {
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
-        const name = e.target.name; // Atributo name dos inputs
+        const name = e.target.name; 
         let value: any = e.target.value;
 
         if (name === "qtd_disp" || name === "preco_venda") {
@@ -27,8 +29,8 @@ export default function CadastroProduto() {
         }
 
         setProduto({
-            ...produto, // Mantém/copia os outros campos
-            [name]: value, // Adic ao campo correspondente o valor
+            ...produto, 
+            [name]: value, 
         });
     };
 
@@ -46,6 +48,7 @@ export default function CadastroProduto() {
 
     // Envia o forms
     const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
         console.log("Produto cadastrado:", produto);
         alert("Produto cadastrado! Veja no console.");
 
@@ -62,8 +65,13 @@ export default function CadastroProduto() {
 
     return (
         <main className="min-h-screen bg-gray-100 text-black flex items-center justify-center p-5">
-            <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
-                <h1 className="text-2xl font-bold mb-6">Cadastrar Produto</h1>
+            <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg relative">
+                
+                <Link href="/ProdutosAdmin" className="absolute top-6 left-6 text-gray-500 hover:text-teal-600 flex items-center gap-1 font-medium">
+                    <IoArrowBackOutline /> Voltar
+                </Link>
+
+                <h1 className="text-2xl font-bold mb-6 mt-8">Cadastrar Produto</h1>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="flex flex-col">
                         <label className="text-sm font-medium">
@@ -140,15 +148,15 @@ export default function CadastroProduto() {
                         <input
                             type="file"
                             accept="image/*"
-                            className="border-2 border-pink-300"
+                            className="border-2 border-pink-300 p-1 rounded"
                             onChange={handleFileChange}
                         />
                         {produto.img && (
                             <Image
                                 src={produto.img}
                                 alt="Preview"
-                                width={30}
-                                height={30}
+                                width={128}
+                                height={128}
                                 className="mt-2 w-32 h-32 object-cover rounded border"
                             />
                         )}
