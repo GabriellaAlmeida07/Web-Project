@@ -5,7 +5,7 @@ import Image from "next/image";
 import logo from "@/assets/logo.png";
 import carrinho from "@/assets/carrinho.png";
 import { IoIosChatboxes } from "react-icons/io";
-import CardProduto from "@/components/Card/card";
+import CardProduto from "@/components/Card/cardProduto";
 import { Pedido, prods_fake } from "@/entities/entities";
 import { useEffect, useRef, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
@@ -25,6 +25,8 @@ export default function Produtos() {
         id_cliente: "",
         prods_associados: [],
         valor_total: 0,
+        data_registro: "",
+        endereco_entrega: ""
     });
 
     function atualizarQuantidade(
