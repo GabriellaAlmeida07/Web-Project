@@ -1,19 +1,34 @@
-## Web Project
+# Como executar o projeto
 
-First, run the development server:
+### Siga os passos abaixo para rodar a aplicação localmente:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Após iniciar, o projeto estará disponível em:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Navegação entre páginas
+
+### Para acessar as páginas da aplicação, utilize a seguinte estrutura de URL:
+
+http://localhost:3000/
+Rotas disponíveis
+
+### As rotas disponíveis são:
+
+- Cadastro
+- Login
+- CadastroProduto
+- EdicaoProduto
+- Produtos
+- ProdutosAdmin
+- Pedidos
+
+Exemplos
+http://localhost:3000/Produtos
+http://localhost:3000/Login
+http://localhost:3000/Pedidos
