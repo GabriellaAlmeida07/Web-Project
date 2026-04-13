@@ -11,11 +11,14 @@ import { useEffect, useRef, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { formatarTotal } from "@/utils/formatacao";
 import { BsEmojiNeutral } from "react-icons/bs";
+import { GrSend } from "react-icons/gr";
 
 export default function Produtos() {
     // Parte lógica do código (javascript + useState + useEffect)
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [isOpenChat, setIsOpenChat] = useState<boolean>(false);
     const caixaRef = useRef<HTMLDivElement>(null);
+    const caixaRefChat = useRef<HTMLDivElement>(null);
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
     const [digitando, setDigitando] = useState<Record<string, string | null>>(
         {}
@@ -26,7 +29,7 @@ export default function Produtos() {
         prods_associados: [],
         valor_total: 0,
         data_registro: "",
-        endereco_entrega: ""
+        endereco_entrega: "",
     });
 
     function atualizarQuantidade(
@@ -39,8 +42,8 @@ export default function Produtos() {
         novaQtd = Number(novaQtd);
         preco = Number(preco);
 
-        if(novaQtd > qtd_disp) {
-            console.log("Quantidade insuficiente")
+        if (novaQtd > qtd_disp) {
+            console.log("Quantidade insuficiente");
             return;
         }
 
@@ -106,6 +109,25 @@ export default function Produtos() {
         };
     }, [isOpen]);
 
+    // Quando clicar fora do chat ele irá fechar
+    useEffect(() => {
+        if (!isOpenChat) return;
+
+        function handleCliqueFora(event: MouseEvent) {
+            if (
+                caixaRefChat.current &&
+                !caixaRefChat.current.contains(event.target as Node)
+            ) {
+                setIsOpenChat(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleCliqueFora);
+        return () => {
+            document.removeEventListener("mousedown", handleCliqueFora);
+        };
+    }, [isOpenChat]);
+
     // Parte "html e css"
     return (
         <main className="min-h-screen bg-[#FDF6F6] text-black">
@@ -130,6 +152,9 @@ export default function Produtos() {
                     <IoIosChatboxes
                         className="text-gray-500 hover:text-gray-600"
                         size={27}
+                        onClick={() => {
+                            setIsOpenChat(true);
+                        }}
                     />
                 </header>
 
@@ -209,6 +234,7 @@ export default function Produtos() {
                                 {" "}
                                 Seu pedido{" "}
                             </div>
+
                             {/* Header do grid */}
                             <div className="grid grid-cols-[96px_1fr_96px_96px] border-b-2 pb-2 mt-10 font-semibold border-dashed border-teal-500 text-center">
                                 <div>Qtd</div>
@@ -364,6 +390,50 @@ export default function Produtos() {
                             </div>
                         </div>
                     )}
+                </div>
+            )}
+
+            {/* Exibe chat com o vendedor */}
+            {isOpenChat && (
+                <div
+                    ref={caixaRefChat}
+                    className="fixed top-0 right-0 h-[100dvh] max-h-[100dvh] w-[95vw] max-w-[500px] bg-white z-[900] shadow-2xl flex flex-col"
+                >
+                    <div className="p-2">
+                        <button
+                            className="w-24 h-10 flex items-center justify-center gap-2 font-semibold bg-[#F08FAF] text-white rounded"
+                            onClick={() => {
+                                setIsOpenChat(false);
+                            }}
+                        >
+                            <IoArrowBackOutline />
+                            Voltar
+                        </button>
+                    </div>
+
+                    <div className="text-pretty text-lg font-medium mt-4 p-2 flex items-center justify-center rounded border-2 box-decoration-slice border-gray-400">
+                        {" "}
+                        Chat com o vendedor{" "}
+                    </div>
+
+                    {/* Área de mensagens */}
+                    <div className="flex-1 overflow-y-auto p-4">
+                        <p className="text-gray-500 text-center">
+                            Nenhuma mensagem ainda...
+                        </p>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="px-3 py-6 border-t flex items-center gap-2">
+                        <textarea
+                            placeholder="Digite sua mensagem..."
+                            className="flex-1 h-20 border rounded px-3 py-2 outline-none resize-none"
+                        />
+
+                        <button className="bg-teal-500 text-white px-4 py-2 rounded">
+                            <GrSend size={22} />
+                        </button>
+                    </div>
                 </div>
             )}
         </main>
