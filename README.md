@@ -27,6 +27,8 @@ Rotas disponíveis
 - Produtos
 - ProdutosAdmin
 - Pedidos
+- PedidosVendedor
+- MsgsAdmin
 
 Exemplos
 http://localhost:3000/Produtos
