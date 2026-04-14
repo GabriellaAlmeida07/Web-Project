@@ -9,6 +9,7 @@ import oculos from "@/assets/oculos.png";
 import carteira from "@/assets/carteira.png";
 import fone from "@/assets/fone.png";
 import garrafa from "@/assets/garrafa.png";
+import MsgsAdmin from "@/app/(pages)/MsgsAdmin/page";
 
 export type ProdutoProps = {
     id: string;
@@ -44,6 +45,44 @@ export type PedidoProps = {
     pedido: Pedido;
 };
 
+export interface Msg {
+    id: string;
+    assunto: string;
+    nome_cliente: string;
+    id_cliente: string;
+    data_registro: string;
+    conteudo: string;
+    autor: "cliente" | "vendedor";
+}
+
+export type MsgProps = {
+    msg: Msg; //Como saber alternar bonitinho resposta pergunta resposta pergunta se cliente pode enviar varias msgs abaixo da outra sem resposta
+    onResponder: (msg: Msg) => void;
+};
+
+// Msgs fake
+export const msgs_fake: Msg[] = [
+    {
+        id: "1",
+        assunto: "Dúvida sobre produto",
+        nome_cliente: "Maria",
+        id_cliente: "1",
+        data_registro: "14/04/2026",
+        conteudo: "Esse produto tem garantia?",
+        autor: "cliente",
+    },
+    {
+        id: "2",
+        assunto: "Entrega",
+        nome_cliente: "João",
+        id_cliente: "2",
+        data_registro: "13/04/2026",
+        conteudo: "Qual o prazo de entrega?",
+        autor: "cliente",
+    },
+];
+
+// Pedidos fake
 export const pedidosFake: Pedido[] = [
     {
         id: "1",
