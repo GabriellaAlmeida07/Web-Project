@@ -23,7 +23,9 @@ export type ProdutoProps = {
 
 export type Props = ProdutoProps & {
     quantidade: number;
+    preco_venda: number;
     onChangeQtd: (novaQtd: number) => void;
+    exibirAvaliacao?: boolean;
 };
 
 export type ProdAssociado = {

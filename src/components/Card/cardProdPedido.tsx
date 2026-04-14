@@ -11,7 +11,8 @@ export default function CardProdPedido({
     desc,
     preco_venda,
     quantidade,
-}: Props) {
+    exibirAvaliacao = true,
+}: Props) {  
     // ESTADOS DE AVALIAÇÃO
     // avaliacaoAberta: Controla se a div com as estrelas está visível (true) ou se mostra o botão inicial "Avaliar" (false).
     const [avaliacaoAberta, setAvaliacaoAberta] = useState(false);
@@ -43,50 +44,48 @@ export default function CardProdPedido({
                 </div>
 
                 {/* ÁREA DE AVALIAÇÃO: Botão "Avaliar" ou as estrelas, dependendo do estado */}
-                <div className="w-full md:w-auto flex flex-col items-center justify-center">
-                    
-                    {/* Renderização Condicional: Se não estiver aberto, mostra o botão padrão */}
-                    {!avaliacaoAberta ? (
-                        <button
-                            onClick={() => setAvaliacaoAberta(true)}
-                            className="w-full md:w-32 h-10 border-2 border-[#14B8A6] text-[#14B8A6] font-bold rounded hover:bg-[#14B8A6] hover:text-white transition-colors"
-                        >
-                            Avaliar
-                        </button>
-                    ) : (
-                        // Se estiver aberto (clicou no botão), renderiza o painel de 5 estrelas
-                        <div className="flex flex-col items-center bg-gray-50 p-2 rounded-lg border border-gray-200 w-full md:w-auto shadow-inner animate-in fade-in zoom-in duration-200">
-                            <span className="text-xs text-gray-500 mb-1 font-medium">Sua nota:</span>
-                            
-                            <div className="flex gap-1">
-                                {/* Criação de um Array com 5 posições vazias para mapear 5 ícones de estrela dinamicamente */}
-                                {[...Array(5)].map((_, i) => {
-                                    const valorEstrela = i + 1;
-                                    return (
-                                        <FaStar
-                                            key={valorEstrela}
-                                            className="cursor-pointer transition-colors"
-                                            color={valorEstrela <= notaUser ? "#FFD700" : "#e4e5e9"}
-                                            size={22}
-                                            onClick={() => setNotaUser(valorEstrela)}
-                                        />
-                                    );
-                                })}
+                {exibirAvaliacao && (
+                    <div className="w-full md:w-auto flex flex-col items-center justify-center">
+                        {!avaliacaoAberta ? (
+                            <button
+                                onClick={() => setAvaliacaoAberta(true)}
+                                className="w-full md:w-32 h-10 border-2 border-[#14B8A6] text-[#14B8A6] font-bold rounded hover:bg-[#14B8A6] hover:text-white transition-colors"
+                            >
+                                Avaliar
+                            </button>
+                        ) : (
+                            <div className="flex flex-col items-center bg-gray-50 p-2 rounded-lg border border-gray-200 w-full md:w-auto shadow-inner animate-in fade-in zoom-in duration-200">
+                                <span className="text-xs text-gray-500 mb-1 font-medium">Sua nota:</span>
+                                
+                                <div className="flex gap-1">
+                                    {[...Array(5)].map((_, i) => {
+                                        const valorEstrela = i + 1;
+                                        return (
+                                            <FaStar
+                                                key={valorEstrela}
+                                                className="cursor-pointer transition-colors"
+                                                color={valorEstrela <= notaUser ? "#FFD700" : "#e4e5e9"}
+                                                size={22}
+                                                onClick={() => setNotaUser(valorEstrela)}
+                                            />
+                                        );
+                                    })}
+                                </div>
+                                
+                                {notaUser > 0 && (
+                                    <button
+                                        onClick={() => setAvaliacaoAberta(false)}
+                                        className="mt-2 w-full h-7 bg-[#14B8A6] text-white font-semibold text-xs rounded hover:bg-teal-600 transition"
+                                    >
+                                        Enviar
+                                    </button>
+                                )}
                             </div>
-                            
-                            {/* O botão 'Enviar' só aparece SE o usuário tiver clicado em pelo menos 1 estrela */}
-                            {notaUser > 0 && (
-                                <button
-                                    // Ao enviar, fecha o modo de avaliação
-                                    onClick={() => setAvaliacaoAberta(false)}
-                                    className="mt-2 w-full h-7 bg-[#14B8A6] text-white font-semibold text-xs rounded hover:bg-teal-600 transition"
-                                >
-                                    Enviar
-                                </button>
-                            )}
-                        </div>
-                    )}
-                </div>
+                        )}
+                    </div>
+                )}
+                {/* FIM DA CONDIÇÃO */}
+
             </div>
         </main>
     );
