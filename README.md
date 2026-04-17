@@ -11,26 +11,45 @@ Após iniciar, o projeto estará disponível em:
 
 http://localhost:3000
 
-## Navegação entre páginas
+# Guia de Navegação e Uso 
 
-### Para acessar as páginas da aplicação, utilize a seguinte estrutura de URL:
+Ao rodar o projeto localmente (`localhost:3000`), você será direcionado automaticamente para a rota padrão: **Painel do Vendedor**.
 
-http://localhost:3000/
-Rotas disponíveis
+## Área do Vendedor
+No Painel do Vendedor, você encontrará um **Header** fixo que permite navegar para as páginas:
 
-### As rotas disponíveis são:
+* **Adicionar Novo Produto:** Clique no botão `Adicionar Produto` localizado no header.
+* **Mensagens Recebidas:** Clique no botão `Ver Mensagens` no header para visualizar o chat com os clientes.
+* **Pedidos Recebidos:** Clique no botão `Pedidos Recebidos` no header para visualizar as vendas realizadas.
 
-- Cadastro
-- Login
-- CadastroProduto
-- EdicaoProduto
-- Produtos
-- ProdutosAdmin
-- Pedidos
-- PedidosVendedor
-- MsgsAdmin
+Para visualizar a página de edição de produto:
+* **Editar Produto Existente:** Localize o produto que deseja editar e clique no botão com o **ícone de Lápis** (✎). Isso abrirá a página de edição preenchida.
 
-Exemplos
-http://localhost:3000/Produtos
-http://localhost:3000/Login
-http://localhost:3000/Pedidos
+## Autenticação (Acesso Manual)
+Como o sistema está em fase de implementação, utilize as rotas abaixo ou o botão de saída:
+* **Login:** Acesse `localhost:3000/Login` ou clique em `Logout` no header.
+* **Cadastro:** Acesse `localhost:3000/Cadastro`.
+
+---
+
+## Área do Cliente
+Visto que a autenticação ainda não está integrada, o acesso à visão do cliente deve ser feito manualmente via URL:
+
+* **Página Inicial do Cliente:** Acesse `localhost:3000/HomeCliente`.
+
+### Funcionalidades Disponíveis na HomeCliente:
+* **Vitrine:** Visualização de todos os produtos disponíveis para compra.
+* **Carrinho:** Adição de itens e finalização do pedido.
+* **Chat:** Comunicação direta com o vendedor, clique no `ícone de chat` localizado no header da área do cliente.
+* **Meus Pedidos:** Para visualizar seu histórico de compras, clique no botão `Pedidos` localizado no header da área do cliente.
+
+---
+
+## Resumo de Rotas Úteis
+
+| Página | Caminho (URL) |
+| :--- | :--- |
+| Painel do Vendedor | `localhost:3000/` |
+| Login | `localhost:3000/Login` |
+| Cadastro | `localhost:3000/Cadastro` |
+| Home do Cliente | `localhost:3000/HomeCliente` |
