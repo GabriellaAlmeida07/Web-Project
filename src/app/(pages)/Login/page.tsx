@@ -20,7 +20,7 @@ export default function Login() {
                 {/* Cabeçalho */}
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-gray-800">Acesso Restrito</h1>
-                    <p className="text-sm text-gray-500 mt-2">
+                    <p className="text-base text-gray-500 mt-2">
                         Entre para acessar a loja.
                     </p>
                 </div>
@@ -29,19 +29,19 @@ export default function Login() {
                 <form className="flex flex-col gap-5" onSubmit={handleLogin}>
                     
                     <div className="flex flex-col gap-1">
-                        <label htmlFor="email" className="ml-1 text-sm font-medium text-gray-700">
+                        <label htmlFor="email" className="ml-1 text-base font-medium text-gray-700">
                             E-mail
                         </label>
                         <input
                             type="email"
                             id="email"
-                            placeholder="admin@alojinhapreferida.com"
+                            placeholder="maria@gmail.com"
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition-colors"
                         />
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <label htmlFor="password" className="ml-1 text-sm font-medium text-gray-700">
+                        <label htmlFor="password" className="ml-1 text-base font-medium text-gray-700">
                             Senha
                         </label>
                         <input
@@ -63,7 +63,7 @@ export default function Login() {
                 {/* Divisor "ou" */}
                 <div className="flex items-center gap-3 mt-2">
                     <div className="flex-1 h-px bg-gray-300"></div>
-                    <span className="text-sm text-gray-400">ou</span>
+                    <span className="text-base text-gray-400">ou</span>
                     <div className="flex-1 h-px bg-gray-300"></div>
                 </div>
 
@@ -84,7 +84,7 @@ export default function Login() {
                 </button>
 
                 {/* Rodapé com link de redirecionamento para Cadastro */}
-                <div className="text-center mt-4 text-sm text-gray-600">
+                <div className="text-center mt-4 text-base text-gray-600">
                     Não tem uma conta?{' '}
                     <Link href="/Cadastro" className="text-teal-600 font-semibold hover:underline">
                         Cadastre-se

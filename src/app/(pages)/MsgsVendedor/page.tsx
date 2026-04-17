@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { Msg, msgs_fake } from "@/entities/entities";
-import { IoArrowBackOutline } from "react-icons/io5";
+import { IoArrowBackOutline, IoStorefrontOutline } from "react-icons/io5";
 import { GrSend } from "react-icons/gr";
-import CardMsg from "@/components/Card/cardMsgAdmin";
+import CardMsg from "@/components/Card/cardMsg";
 import logo from "@/assets/logo.png";
 import Image from "next/image";
+import Link from "next/link";
 
-export default function MsgsAdmin() {
+export default function MsgsVendedor() {
     const [listaMsgs, setListaMsgs] = useState(msgs_fake);
     const [isOpenChat, setIsOpenChat] = useState(false);
     const [chatAtual, setChatAtual] = useState<Msg[]>([]);
@@ -26,13 +27,13 @@ export default function MsgsAdmin() {
 
     // Enviar resposta
     function enviarMsg() {
-        // Fazer
+        console.log("Mensagem enviada!");
     }
 
     return (
         <main className="min-h-screen text-black bg-[#FDF6F6]">
             {/* Header Admin */}
-            <header className="bg-[#e5e5e5] px-6 md:px-10 py-3 flex justify-between items-center shadow-lg">
+            <header className="bg-[#e5e5e5] px-4 gap-3 py-3 flex justify-between items-center shadow-lg">
                 <div className="flex items-center gap-4">
                     <Image
                         src={logo}
@@ -44,6 +45,13 @@ export default function MsgsAdmin() {
                         Mensagens Recebidas
                     </span>
                 </div>
+
+                <Link href="/">
+                    <button className="flex items-center gap-2 bg-teal-500 text-white px-2 py-2 rounded-lg font-bold hover:bg-teal-600 transition-colors shadow-md">
+                        <IoStorefrontOutline size={25} />
+                        <span>Painel do Vendedor</span>
+                    </button>
+                </Link>
             </header>
 
             {/* Lista */}
@@ -56,7 +64,7 @@ export default function MsgsAdmin() {
             {/* Chat lateral */}
             {isOpenChat && (
                 <div className="fixed top-0 right-0 h-screen w-[95vw] max-w-[500px] bg-white shadow-2xl flex flex-col">
-                    {/* Header */}
+                  
                     <div className="p-2">
                         <button
                             onClick={() => setIsOpenChat(false)}
@@ -89,18 +97,14 @@ export default function MsgsAdmin() {
                     </div>
 
                     {/* Input */}
-                    <div className="p-3 border-t flex gap-2">
+                    <div className="px-3 py-6 border-t flex items-center gap-2">
                         <textarea
-                            value={msgInput}
                             placeholder="Digite sua resposta..."
-                            onChange={(e) => setMsgInput(e.target.value)}
-                            className="flex-1 border rounded p-2 resize-none"
+                            className="flex-1 h-20 border rounded px-3 py-2 outline-none resize-none"
                         />
-                        <button
-                            onClick={enviarMsg}
-                            className="bg-teal-500 text-white px-4 rounded"
-                        >
-                            <GrSend />
+
+                        <button className="bg-teal-500 text-white px-4 py-2 rounded">
+                            <GrSend size={22} />
                         </button>
                     </div>
                 </div>

@@ -11,9 +11,10 @@ export default function CardProdPedido({
     desc,
     preco_venda,
     quantidade,
+    tipo,
     exibirAvaliacao = true,
 }: Props) {  
-    // ESTADOS DE AVALIAÇÃO
+    // Estados da avaliação
     // avaliacaoAberta: Controla se a div com as estrelas está visível (true) ou se mostra o botão inicial "Avaliar" (false).
     const [avaliacaoAberta, setAvaliacaoAberta] = useState(false);
     // notaUser: Armazena a nota (1 a 5) que o usuário clicou. Começa em 0.
@@ -21,7 +22,6 @@ export default function CardProdPedido({
 
     return (
         <main className="w-full">
-            {/* CONTAINER PRINCIPAL DO CARD */}
             <div className="w-full border-2 border-[#14B8A6] rounded-lg shadow-sm p-3 mb-4 flex flex-col md:flex-row items-center gap-4 bg-white transition-all">
                 
                 <div className="relative h-20 w-20 flex-shrink-0">
@@ -33,7 +33,7 @@ export default function CardProdPedido({
                     />
                 </div>
 
-                {/* ÁREA DE INFORMAÇÕES DO PRODUTO */}
+                {/* Área de informações */}
                 <div className="flex flex-col flex-1 text-black text-sm text-center md:text-left">
                     <div className="font-bold text-base line-clamp-1">{nome}</div>
                     <div className="text-gray-600 text-xs line-clamp-2 mt-1">{desc}</div>
@@ -43,8 +43,8 @@ export default function CardProdPedido({
                     </div>
                 </div>
 
-                {/* ÁREA DE AVALIAÇÃO: Botão "Avaliar" ou as estrelas, dependendo do estado */}
-                {exibirAvaliacao && (
+                {/* Área de avaliação */}
+                {exibirAvaliacao && tipo == "cliente" && (
                     <div className="w-full md:w-auto flex flex-col items-center justify-center">
                         {!avaliacaoAberta ? (
                             <button
@@ -84,8 +84,6 @@ export default function CardProdPedido({
                         )}
                     </div>
                 )}
-                {/* FIM DA CONDIÇÃO */}
-
             </div>
         </main>
     );

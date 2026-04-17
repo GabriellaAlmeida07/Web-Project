@@ -5,16 +5,18 @@ import Image from "next/image";
 import logo from "@/assets/logo.png";
 import carrinho from "@/assets/carrinho.png";
 import { IoIosChatboxes } from "react-icons/io";
-import CardProduto from "@/components/Card/cardProduto";
 import { Pedido, prods_fake } from "@/entities/entities";
 import { useEffect, useRef, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { formatarTotal } from "@/utils/formatacao";
 import { BsEmojiNeutral } from "react-icons/bs";
 import { GrSend } from "react-icons/gr";
+import CardProduto from "@/components/Card/cardProduto";
+import Link from "next/link";
+import { FaBars, FaBoxOpen } from "react-icons/fa";
+import { CiLogout } from "react-icons/ci";
 
-export default function Produtos() {
-    // Parte lógica do código (javascript + useState + useEffect)
+export default function HomeCliente() {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isOpenChat, setIsOpenChat] = useState<boolean>(false);
     const caixaRef = useRef<HTMLDivElement>(null);
@@ -30,6 +32,7 @@ export default function Produtos() {
         valor_total: 0,
         data_registro: "",
         endereco_entrega: "",
+        entregue: false,
     });
 
     function atualizarQuantidade(
@@ -134,28 +137,45 @@ export default function Produtos() {
             {/* Grid de cabeçalho e conteúdo */}
             <div className="h-screen grid grid-rows-[auto_1fr]">
                 {/* Header */}
-                <header className="bg-[#e5e5e5] px-6 md:px-10 py-3 flex justify-between items-center shadow-lg">
-                    {/* Responsividade: por exemplo em telas maiores que média (md), padding em x de 10.
-                        Para telas menores que md paddind em x de 6.
-                    */}
-                    <Image
-                        src={logo}
-                        alt="A lojinha Preferida"
-                        className="w-24 md:w-32 h-auto cursor-pointer"
-                        priority
-                        style={{ cursor: "pointer" }}
-                    />
-                    {/* Responsividade na imagem: em telas maiores que média (md), largura de 32.
-                        Para telas menores que md largura de 24.
-                    */}
+                <header className="bg-[#e5e5e5] px-4 sm:px-6 md:px-4 py-3 gap-2 flex justify-between items-center shadow-lg border-b-4 border-teal-500">
+                    {/* Logo e título */}
+                    <div className="flex items-center gap-4">
+                        <Image
+                            src={logo}
+                            alt="A lojinha Preferida"
+                            className="w-24 md:w-32 h-auto"
+                            priority
+                        />
+                        <span className="font-bold text-lg text-gray-700 hidden lg:block">
+                            Painel do Cliente
+                        </span>
+                    </div>
+
+                    <div className="flex gap-5">
+                    <Link href="/PedidosCliente">
+                        <button className="flex items-center gap-2 bg-teal-500 text-white border border-gray-300 px-2 py-2 rounded-lg font-semibold hover:bg-teal-600 transition-colors">
+                            <FaBoxOpen />
+                            <span>Pedidos</span>
+                        </button>
+                    </Link>
 
                     <IoIosChatboxes
-                        className="text-gray-500 hover:text-gray-600"
-                        size={27}
+                        className="text-gray-500 mt-2 hover:text-gray-600"
+                        size={30}
                         onClick={() => {
                             setIsOpenChat(true);
                         }}
                     />
+
+                    <Link href="/Login">
+                        <button className="bg-[#e5e5e5] border border-gray-400 text-black px-3 py-2 rounded flex items-center cursor-pointer gap-1">
+                            <CiLogout className="text-lg" />
+                            <span className="text-base font-semibold">
+                                Sair
+                            </span>
+                        </button>
+                    </Link>
+                    </div>
                 </header>
 
                 {/* Conteúdo (produtos) */}
@@ -180,6 +200,7 @@ export default function Produtos() {
                                         p.preco_venda
                                     )
                                 }
+                                tipo="cliente"
                             />
                         ))}
                     </div>
@@ -255,7 +276,7 @@ export default function Produtos() {
                                     return (
                                         <div
                                             key={prod.prod_id}
-                                            className="border-b-2 border-dashed border-teal-500 mt-2 py-5 px-2"
+                                            className="border-b-2 border-dashed border-teal-600 mt-2 py-5 px-2"
                                         >
                                             <div className="grid grid-cols-[96px_1fr_96px_96px] items-center">
                                                 {/* Quantidade */}
@@ -378,7 +399,7 @@ export default function Produtos() {
                                     Total: R$ {pedido.valor_total.toFixed(2)}
                                 </p>
 
-                                <div className="flex gap-3 mt-2 justify-center">
+                                <div className="flex gap-3 mt-2 font-semibold justify-center">
                                     <button className="w-32 h-10 bg-red-400 text-white rounded">
                                         Excluir
                                     </button>
