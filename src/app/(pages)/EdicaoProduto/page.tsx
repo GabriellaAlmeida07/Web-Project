@@ -64,51 +64,51 @@ export default function EdicaoProduto() {
         }
     };
 
-    const inputStyle = "border-2 border-gray-200 p-2 rounded-md outline-none focus:border-teal-500 transition-all bg-gray-50";
+    const inputStyle = "border-2 text-gray-600 border-gray-200 p-2 rounded-md outline-none focus:border-teal-500 focus:text-black transition-all bg-gray-50";
 
     return (
         <main className="min-h-screen bg-[#F8F9FA] text-black flex items-center justify-center p-5 font-sans">
             <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-lg relative border-t-8 border-teal-600">
                 
                 {/* Navegação simples via Link */}
-                <Link href="/ProdutosAdmin" className="absolute top-6 left-6 text-gray-400 hover:text-teal-600 flex items-center gap-1 font-semibold transition-colors">
+                <Link href="/" className="absolute top-6 left-6 text-gray-500 hover:text-teal-600 flex items-center gap-1 font-semibold transition-colors">
                     <IoArrowBackOutline size={20} /> Voltar
                 </Link>
 
                 <div className="text-center mb-8 mt-10">
                     <h1 className="text-3xl font-extrabold text-gray-800">Editar Produto</h1>
-                    <p className="text-gray-500 text-sm">Modifique as informações do item selecionado</p>
+                    <p className="text-gray-500 text-base">Modifique as informações do item selecionado</p>
                 </div>
 
                 <form onSubmit={handleAtualizar} className="space-y-5">
                     <div className="flex flex-col gap-1">
-                        <label className="text-xs font-bold uppercase text-gray-400 ml-1">ID (Não editável)</label>
+                        <label className="text-base font-medium text-gray-700 ml-1">ID (Não editável)</label>
                         <input type="text" name="id" value={produto.id} disabled className={`${inputStyle} opacity-60 cursor-not-allowed`} />
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <label className="text-xs font-bold uppercase text-gray-400 ml-1">Nome do Item</label>
+                        <label className="text-base font-medium text-gray-700 ml-1">Nome do Item</label>
                         <input required type="text" name="nome" value={produto.nome} onChange={handleChange} className={inputStyle} />
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <label className="text-xs font-bold uppercase text-gray-400 ml-1">Descrição</label>
+                        <label className="text-base font-medium text-gray-700 ml-1">Descrição</label>
                         <textarea required name="desc" value={produto.desc} onChange={handleChange} className={`${inputStyle} h-24 resize-none`} />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1">
-                            <label className="text-xs font-bold uppercase text-gray-400 ml-1">Estoque</label>
+                            <label className="text-base font-medium text-gray-700 ml-1">Estoque</label>
                             <input required min={0} type="number" name="qtd_disp" value={produto.qtd_disp} onChange={handleChange} className={inputStyle} />
                         </div>
                         <div className="flex flex-col gap-1">
-                            <label className="text-xs font-bold uppercase text-gray-400 ml-1">Preço (R$)</label>
+                            <label className="text-base font-medium text-gray-700 ml-1">Preço (R$)</label>
                             <input required min={0} step="0.01" type="number" name="preco_venda" value={produto.preco_venda} onChange={handleChange} className={inputStyle} />
                         </div>
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <label className="text-xs font-bold uppercase text-gray-400 ml-1">Imagem do Produto</label>
+                        <label className="text-base font-medium text-gray-700 ml-1">Imagem do Produto</label>
                         <div className="flex items-center gap-4">
                             <input type="file" accept="image/*" onChange={handleFileChange} className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer" />
                             {produto.img && (
@@ -123,13 +123,13 @@ export default function EdicaoProduto() {
                         <button
                             type="button"
                             onClick={handleExcluir}
-                            className="w-1/3 bg-white text-red-500 border-2 border-red-500 py-3 rounded-xl font-bold hover:bg-red-50 transition-all flex items-center justify-center gap-2"
+                            className="w-1/3 bg-white text-red-500 border-2 border-red-500 py-3 rounded-xl font-medium hover:bg-red-50 transition-all flex items-center justify-center gap-2"
                         >
                             <IoTrashOutline size={20} /> Excluir
                         </button>
                         <button
                             type="submit"
-                            className="w-2/3 bg-teal-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-teal-700 shadow-lg shadow-teal-100 transition-all active:scale-95"
+                            className="w-2/3 bg-teal-600 text-white py-3 rounded-xl font-medium text-lg hover:bg-teal-700 shadow-lg shadow-teal-100 transition-all active:scale-95"
                         >
                             Salvar Alterações
                         </button>

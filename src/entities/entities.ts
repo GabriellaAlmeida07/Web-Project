@@ -9,7 +9,6 @@ import oculos from "@/assets/oculos.png";
 import carteira from "@/assets/carteira.png";
 import fone from "@/assets/fone.png";
 import garrafa from "@/assets/garrafa.png";
-import MsgsAdmin from "@/app/(pages)/MsgsAdmin/page";
 
 export type ProdutoProps = {
     id: string;
@@ -19,6 +18,7 @@ export type ProdutoProps = {
     qtd_disp: number;
     preco_venda: number;
     avaliacao?: number; // De 0-5
+    tipo?: "vendedor" | "cliente"; // Para sabermos o tipo de usuário "logado", já que ainda não temos autenticação
 };
 
 export type Props = ProdutoProps & {
@@ -41,10 +41,12 @@ export interface Pedido {
     id_cliente: string; // Para acessar nome, email...
     data_registro: string; // Data de quando o pedido foi criado/cadastrado
     endereco_entrega: string;
+    entregue: boolean;
 }
 
 export type PedidoProps = {
     pedido: Pedido;
+    user?: "vendedor" | "cliente"; // Só por enquanto que não temos verificação/autenticação
 };
 
 export interface Msg {
@@ -96,6 +98,7 @@ export const pedidosFake: Pedido[] = [
             { prod_id: "002", qtd: 1, preco_venda: 199.9 },
         ],
         valor_total: 329.8,
+        entregue: false
     },
     {
         id: "2",
@@ -107,6 +110,7 @@ export const pedidosFake: Pedido[] = [
             { prod_id: "004", qtd: 1, preco_venda: 39.9 },
         ],
         valor_total: 139.7,
+        entregue: true
     },
     {
         id: "3",
@@ -118,6 +122,7 @@ export const pedidosFake: Pedido[] = [
             { prod_id: "007", qtd: 1, preco_venda: 259.9 },
         ],
         valor_total: 419.8,
+        entregue: false
     },
 ];
 
