@@ -4,7 +4,7 @@ import { MsgProps } from "@/entities/entities";
 
 export default function CardMsg({ msg, onResponder }: MsgProps) {
     return (
-        <div className="w-72 md:w-[400px] border-2 border-teal border-teal-500 rounded-lg p-3 flex flex-col gap-2 m-2">
+        <div className="w-72 md:w-[400px] border-2 border-teal border-teal-600 rounded-lg p-3 flex flex-col gap-2 m-2">
             
             {/* Data */}
             <div className="flex justify-end text-sm">

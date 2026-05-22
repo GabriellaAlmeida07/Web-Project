@@ -37,7 +37,7 @@ export default function CardProduto({
         <main>
             <div
                 className={
-                    "w-36 md:w-44 h-96 border-2 border-teal-500 rounded-lg shadow-lg mt-5 ml-5 flex flex-col gap-5 overflow-hidden"
+                    "w-36 md:w-44 h-96 border-2 border-teal-600 rounded-lg shadow-lg mt-5 ml-5 flex flex-col gap-5 overflow-hidden"
                 }
             >
                 {/* Imagem */}
@@ -89,11 +89,11 @@ export default function CardProduto({
                     <div className="mt-auto w-full py-2 flex justify-center">
                         {/* Cliente */}
                         {tipo === "cliente" && (
-                            <div className="flex items-center w-32 gap-2 bg-teal-500 rounded-lg shadow px-2 py-1">
+                            <div className="flex items-center w-32 gap-2 bg-teal-600 rounded-lg shadow px-2 py-1">
                                 
                                 <button
                                     onClick={diminuir}
-                                    className="w-7 h-7 bg-teal-600 text-white rounded"
+                                    className="w-7 h-7 bg-teal-700 text-white rounded"
                                 >
                                     −
                                 </button>
@@ -128,7 +128,7 @@ export default function CardProduto({
 
                                 <button
                                     onClick={aumentar}
-                                    className="w-7 h-7 bg-teal-600 text-white rounded"
+                                    className="w-7 h-7 bg-teal-700 text-white rounded"
                                 >
                                     +
                                 </button>
@@ -140,7 +140,7 @@ export default function CardProduto({
                             <div className="flex gap-3">
                                 
                                 <Link href={`/EdicaoProduto?id=${id}`}>
-                                    <button className="w-10 h-10 flex items-center justify-center bg-teal-500 text-white rounded hover:bg-teal-600">
+                                    <button className="w-10 h-10 flex items-center justify-center bg-teal-600 text-white rounded hover:bg-teal-700">
                                         <FaPen />
                                     </button>
                                 </Link>
