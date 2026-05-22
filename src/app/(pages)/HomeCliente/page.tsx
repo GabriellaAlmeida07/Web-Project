@@ -137,7 +137,7 @@ export default function HomeCliente() {
             {/* Grid de cabeçalho e conteúdo */}
             <div className="h-screen grid grid-rows-[auto_1fr]">
                 {/* Header */}
-                <header className="bg-[#e5e5e5] px-4 sm:px-6 md:px-4 py-3 gap-2 flex justify-between items-center shadow-lg border-b-4 border-teal-500">
+                <header className="bg-[#e5e5e5] px-4 sm:px-6 md:px-4 py-3 gap-2 flex justify-between items-center shadow-lg border-b-4 border-teal-600">
                     {/* Logo e título */}
                     <div className="flex items-center gap-4">
                         <Image
@@ -153,7 +153,7 @@ export default function HomeCliente() {
 
                     <div className="flex gap-5">
                     <Link href="/PedidosCliente">
-                        <button className="flex items-center gap-2 bg-teal-500 text-white border border-gray-300 px-2 py-2 rounded-lg font-semibold hover:bg-teal-600 transition-colors">
+                        <button className="flex items-center gap-2 bg-teal-600 text-white border border-gray-300 px-2 py-2 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
                             <FaBoxOpen />
                             <span>Pedidos</span>
                         </button>
@@ -257,7 +257,7 @@ export default function HomeCliente() {
                             </div>
 
                             {/* Header do grid */}
-                            <div className="grid grid-cols-[96px_1fr_96px_96px] border-b-2 pb-2 mt-10 font-semibold border-dashed border-teal-500 text-center">
+                            <div className="grid grid-cols-[96px_1fr_96px_96px] border-b-2 pb-2 mt-10 font-semibold border-dashed border-teal-600 text-center">
                                 <div>Qtd</div>
                                 <div>Produto</div>
                                 <div>Preço</div>
@@ -404,7 +404,7 @@ export default function HomeCliente() {
                                         Excluir
                                     </button>
 
-                                    <button className="w-32 h-10 bg-teal-500 text-white rounded">
+                                    <button className="w-32 h-10 bg-teal-600 hover:bg-teal-700 text-white rounded">
                                         Finalizar
                                     </button>
                                 </div>
@@ -451,7 +451,7 @@ export default function HomeCliente() {
                             className="flex-1 h-20 border rounded px-3 py-2 outline-none resize-none"
                         />
 
-                        <button className="bg-teal-500 text-white px-4 py-2 rounded">
+                        <button className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded">
                             <GrSend size={22} />
                         </button>
                     </div>

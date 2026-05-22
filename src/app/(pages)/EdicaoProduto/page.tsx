@@ -71,7 +71,7 @@ export default function EdicaoProduto() {
             <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-lg relative border-t-8 border-teal-600">
                 
                 {/* Navegação simples via Link */}
-                <Link href="/" className="absolute top-6 left-6 text-gray-500 hover:text-teal-600 flex items-center gap-1 font-semibold transition-colors">
+                <Link href="/" className="absolute top-6 left-6 bg-[#F08FAF] text-white border p-2 rounded-lg flex items-center gap-1 font-semibold transition-colors">
                     <IoArrowBackOutline size={20} /> Voltar
                 </Link>
 

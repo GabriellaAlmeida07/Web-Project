@@ -18,7 +18,7 @@ export default function HomeVendedor() {
         <main className="min-h-screen bg-[#FDF6F6] text-black">
             <div className="h-screen grid grid-rows-[auto_1fr]">
                 {/* Header Vendedor */}
-                <header className="bg-[#e5e5e5] px-4 sm:px-6 md:px-4 py-3 gap-2 flex justify-between items-center shadow-lg border-b-4 border-teal-500">
+                <header className="bg-[#e5e5e5] px-4 sm:px-6 md:px-4 py-3 gap-2 flex justify-between items-center shadow-lg border-b-4 border-teal-600">
                     {/* Logo e título */}
                     <div className="flex items-center gap-4">
                         <Image
@@ -35,7 +35,7 @@ export default function HomeVendedor() {
                     {/* Menu telas maiores */}
                     <div className="hidden md:flex items-center gap-3">
                         <Link href="/CadastroProduto">
-                            <button className="flex items-center gap-2 bg-teal-500 text-white px-2 py-2 rounded-lg font-bold hover:bg-teal-600 transition-colors shadow-md">
+                            <button className="flex items-center gap-2 bg-teal-600 text-white px-2 py-2 rounded-lg font-bold hover:bg-teal-700 transition-colors shadow-md">
                                 <FaPlus />
                                 <span>Adicionar Produto</span>
                             </button>
@@ -49,7 +49,7 @@ export default function HomeVendedor() {
                         </Link>
 
                         <Link href="/PedidosVendedor">
-                            <button className="flex items-center gap-2 bg-teal-500 text-white border border-gray-300 px-2 py-2 rounded-lg font-semibold hover:bg-teal-600 transition-colors">
+                            <button className="flex items-center gap-2 bg-teal-600 text-white border border-gray-300 px-2 py-2 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
                                 <FaBoxOpen />
                                 <span>Pedidos Recebidos</span>
                             </button>

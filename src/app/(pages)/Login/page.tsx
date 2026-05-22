@@ -15,7 +15,7 @@ export default function Login() {
     return (
         <main className="min-h-screen bg-[#FDF6F6] text-black flex items-center justify-center p-4">
             
-            <div className="w-full max-w-md bg-white border border-teal-400 rounded-xl shadow-lg p-8 flex flex-col gap-6">
+            <div className="w-full max-w-md bg-white border border-teal-600 rounded-xl shadow-lg p-8 flex flex-col gap-6">
                 
                 {/* Cabeçalho */}
                 <div className="text-center">
@@ -54,7 +54,7 @@ export default function Login() {
 
                     <button 
                         type="submit" 
-                        className="w-full bg-[#14B8A6] text-white py-3 rounded-lg font-semibold mt-2 hover:bg-teal-600 transition-colors shadow-sm"
+                        className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold mt-2 hover:bg-teal-600 transition-colors shadow-sm"
                     >
                         Entrar no Sistema
                     </button>

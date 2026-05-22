@@ -24,7 +24,7 @@ export default function PedidosCliente() {
                     </div>
 
                     <Link href="/HomeCliente">
-                        <button className="flex items-center gap-2 bg-teal-500 text-white px-2 py-2 rounded-lg font-bold hover:bg-teal-600 transition-colors shadow-md">
+                        <button className="flex items-center gap-2 bg-teal-600 text-white px-2 py-2 rounded-lg font-bold hover:bg-teal-700 transition-colors shadow-md">
                             <IoStorefrontOutline size={25} />
                             <span>Painel do Cliente</span>
                         </button>
@@ -33,7 +33,7 @@ export default function PedidosCliente() {
 
                 {/* Conteúdo */}
                 <div className="p-4 md:p-10 overflow-y-auto">
-                    <div className="flex items-center gap-3 mb-8 border-b-2 border-teal-500 pb-3">
+                    <div className="flex items-center gap-3 mb-8 border-b-2 border-teal-600 pb-3">
                         <FaBoxOpen className="text-teal-600 text-3xl" />
                         <div>
                             <h1 className="text-2xl md:text-3xl font-bold text-gray-800">

@@ -11,7 +11,7 @@ export default function CardPedido({ pedido, user }: PedidoProps) {
     return (
         <main className="w-full sm:w-[450px] shrink-0">
             {/* Card principal do pedido */}
-            <div className="relative w-full h-[370px] border-2 border-[#14B8A6] rounded-lg p-5 flex flex-col bg-white shadow-sm hover:shadow-md transition text-black">
+            <div className="relative w-full h-[370px] border-2 border-teal-600 rounded-lg p-5 flex flex-col bg-white shadow-sm hover:shadow-md transition text-black">
                 {/* Cabeçalho do card: título e status */}
                 <div className="flex justify-between items-start mb-3 border-b border-gray-100 pb-3 gap-4">
                     <div className="flex flex-col min-w-0">
@@ -38,7 +38,7 @@ export default function CardPedido({ pedido, user }: PedidoProps) {
                 <div className="text-base space-y-2 mb-4 bg-gray-50 p-3 rounded border border-gray-100 break-words">
                     {user === "vendedor" && (
                         <div>
-                            <span className="font-bold text-[#14B8A6]">
+                            <span className="font-bold text-teal-600">
                                 Cliente:
                             </span>{" "}
                             Maria
@@ -46,14 +46,14 @@ export default function CardPedido({ pedido, user }: PedidoProps) {
                     )}
 
                     <div>
-                        <span className="font-bold text-[#14B8A6]">
+                        <span className="font-bold text-teal-600">
                             Telefone:
                         </span>{" "}
                         (11) 99999-9999
                     </div>
 
                     <div>
-                        <span className="font-bold text-[#14B8A6]">
+                        <span className="font-bold text-teal-600">
                             Endereço:
                         </span>{" "}
                         {pedido.endereco_entrega}
@@ -85,14 +85,14 @@ export default function CardPedido({ pedido, user }: PedidoProps) {
                                     Cancelar
                                 </button>
 
-                                <button className="w-full h-10 bg-teal-500 hover:bg-teal-600 transition rounded font-semibold text-white">
+                                <button className="w-full h-10 bg-teal-600 hover:bg-teal-700 transition rounded font-semibold text-white">
                                     Editar
                                 </button>
                             </div>
                         ))}
 
                     {user === "vendedor" && !pedido.entregue && (
-                        <button className="w-full h-10 bg-[#14B8A6] hover:bg-teal-600 transition rounded font-semibold text-white">
+                        <button className="w-full h-10 bg-teal-600 hover:bg-teal-700 transition rounded font-semibold text-white">
                             Marcar como entregue
                         </button>
                     )}
