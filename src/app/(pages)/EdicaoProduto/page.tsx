@@ -14,10 +14,10 @@ export default function EdicaoProduto() {
     const [produto, setProduto] = useState<ProdutoProps>({
         id: "",
         nome: "",
-        img: undefined,
-        desc: "",
-        qtd_disp: 0,
-        preco_venda: 0,
+        img_url: undefined,
+        descricao: "",
+        qtd_estoque: 0,
+        preco: 0,
     });
 
     useEffect(() => {
@@ -26,7 +26,7 @@ export default function EdicaoProduto() {
             if (produtoEncontrado) {
                 setProduto({
                     ...produtoEncontrado,
-                    img: produtoEncontrado.img as unknown as StaticImageData,
+                    img_url: produtoEncontrado.img_url as unknown as StaticImageData,
                 });
             }
         }
@@ -36,7 +36,7 @@ export default function EdicaoProduto() {
         const { name, value } = e.target;
         setProduto({
             ...produto,
-            [name]: name === "qtd_disp" || name === "preco_venda" ? Number(value) : value,
+            [name]: name === "qtd_estoque" || name === "preco" ? Number(value) : value,
         });
     };
 
@@ -45,7 +45,7 @@ export default function EdicaoProduto() {
         if (file) {
             setProduto({
                 ...produto,
-                img: URL.createObjectURL(file) as unknown as StaticImageData,
+                img_url: URL.createObjectURL(file) as unknown as StaticImageData,
             });
         }
     };
@@ -93,17 +93,17 @@ export default function EdicaoProduto() {
 
                     <div className="flex flex-col gap-1">
                         <label className="text-base font-medium text-gray-700 ml-1">Descrição</label>
-                        <textarea required name="desc" value={produto.desc} onChange={handleChange} className={`${inputStyle} h-24 resize-none`} />
+                        <textarea required name="desc" value={produto.descricao} onChange={handleChange} className={`${inputStyle} h-24 resize-none`} />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1">
                             <label className="text-base font-medium text-gray-700 ml-1">Estoque</label>
-                            <input required min={0} type="number" name="qtd_disp" value={produto.qtd_disp} onChange={handleChange} className={inputStyle} />
+                            <input required min={0} type="number" name="qtd_estoque" value={produto.qtd_estoque} onChange={handleChange} className={inputStyle} />
                         </div>
                         <div className="flex flex-col gap-1">
                             <label className="text-base font-medium text-gray-700 ml-1">Preço (R$)</label>
-                            <input required min={0} step="0.01" type="number" name="preco_venda" value={produto.preco_venda} onChange={handleChange} className={inputStyle} />
+                            <input required min={0} step="0.01" type="number" name="preco" value={produto.preco} onChange={handleChange} className={inputStyle} />
                         </div>
                     </div>
 
@@ -111,9 +111,9 @@ export default function EdicaoProduto() {
                         <label className="text-base font-medium text-gray-700 ml-1">Imagem do Produto</label>
                         <div className="flex items-center gap-4">
                             <input type="file" accept="image/*" onChange={handleFileChange} className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer" />
-                            {produto.img && (
+                            {produto.img_url && (
                                 <div className="relative w-16 h-16 rounded-lg overflow-hidden border-2 border-teal-200">
-                                    <Image src={produto.img} alt="Preview" fill className="object-cover" />
+                                    <Image src={produto.img_url} alt="Preview" fill className="object-cover" />
                                 </div>
                             )}
                         </div>

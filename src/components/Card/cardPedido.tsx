@@ -130,7 +130,7 @@ export default function CardPedido({ pedido, user }: PedidoProps) {
                                         {...p}
                                         quantidade={prod.qtd}
                                         tipo={user}
-                                        preco_venda={prod.preco_venda}
+                                        preco={prod.preco}
                                         onChangeQtd={() => {}}
                                     />
                                 );

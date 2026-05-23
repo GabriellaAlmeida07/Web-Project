@@ -7,9 +7,9 @@ import { FaStar } from "react-icons/fa";
 
 export default function CardProdPedido({
     nome,
-    img,
-    desc,
-    preco_venda,
+    img_url,
+    descricao,
+    preco,
     quantidade,
     tipo,
     exibirAvaliacao = true,
@@ -26,7 +26,7 @@ export default function CardProdPedido({
                 
                 <div className="relative h-20 w-20 flex-shrink-0">
                     <Image
-                        src={img!}
+                        src={img_url!}
                         alt={nome}
                         className="w-full h-full object-contain rounded"
                         priority
@@ -36,9 +36,9 @@ export default function CardProdPedido({
                 {/* Área de informações */}
                 <div className="flex flex-col flex-1 text-black text-sm text-center md:text-left">
                     <div className="font-bold text-base line-clamp-1">{nome}</div>
-                    <div className="text-gray-600 text-xs line-clamp-2 mt-1">{desc}</div>
+                    <div className="text-gray-600 text-xs line-clamp-2 mt-1">{descricao}</div>
                     <div className="mt-2">
-                        Preço: <span className="font-bold text-[#14B8A6]">R$ {preco_venda.toFixed(2)}</span>
+                        Preço: <span className="font-bold text-[#14B8A6]">R$ {preco.toFixed(2)}</span>
                         <span className="ml-3 font-semibold bg-gray-100 px-2 py-1 rounded">Qtd: {quantidade}</span>
                     </div>
                 </div>

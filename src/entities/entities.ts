@@ -13,17 +13,17 @@ import garrafa from "@/assets/garrafa.png";
 export type ProdutoProps = {
     id: string;
     nome: string;
-    img?: StaticImageData;
-    desc: string;
-    qtd_disp: number;
-    preco_venda: number;
+    img_url?: StaticImageData;
+    descricao: string;
+    qtd_estoque: number;
+    preco: number;
     avaliacao?: number; // De 0-5
     tipo?: "vendedor" | "cliente"; // Para sabermos o tipo de usuário "logado", já que ainda não temos autenticação
 };
 
 export type Props = ProdutoProps & {
     quantidade: number;
-    preco_venda: number;
+    preco: number;
     onChangeQtd: (novaQtd: number) => void;
     exibirAvaliacao?: boolean;
 };
@@ -31,7 +31,7 @@ export type Props = ProdutoProps & {
 export type ProdAssociado = {
     prod_id: string; // Para encontrá-lo no bd
     qtd: number;
-    preco_venda: number;
+    preco: number;
 };
 
 export interface Pedido {
@@ -94,8 +94,8 @@ export const pedidosFake: Pedido[] = [
         data_registro: "12/04/2026",
         id_cliente: "1",
         prods_associados: [
-            { prod_id: "003", qtd: 1, preco_venda: 129.9 },
-            { prod_id: "002", qtd: 1, preco_venda: 199.9 },
+            { prod_id: "003", qtd: 1, preco: 129.9 },
+            { prod_id: "002", qtd: 1, preco: 199.9 },
         ],
         valor_total: 329.8,
         entregue: false
@@ -106,8 +106,8 @@ export const pedidosFake: Pedido[] = [
         data_registro: "11/04/2026",
         id_cliente: "2",
         prods_associados: [
-            { prod_id: "001", qtd: 2, preco_venda: 49.9 },
-            { prod_id: "004", qtd: 1, preco_venda: 39.9 },
+            { prod_id: "001", qtd: 2, preco: 49.9 },
+            { prod_id: "004", qtd: 1, preco: 39.9 },
         ],
         valor_total: 139.7,
         entregue: true
@@ -118,8 +118,8 @@ export const pedidosFake: Pedido[] = [
         data_registro: "10/04/2026",
         id_cliente: "3",
         prods_associados: [
-            { prod_id: "006", qtd: 1, preco_venda: 159.9 },
-            { prod_id: "007", qtd: 1, preco_venda: 259.9 },
+            { prod_id: "006", qtd: 1, preco: 159.9 },
+            { prod_id: "007", qtd: 1, preco: 259.9 },
         ],
         valor_total: 419.8,
         entregue: false
@@ -131,91 +131,91 @@ export const prods_fake: ProdutoProps[] = [
     {
         id: "001",
         nome: "Camiseta Básica",
-        img: camiseta,
-        desc: "100% algodão",
-        qtd_disp: 10,
-        preco_venda: 49.9,
+        img_url: camiseta,
+        descricao: "100% algodão",
+        qtd_estoque: 10,
+        preco: 49.9,
         avaliacao: 4,
     },
     {
         id: "002",
         nome: "Tênis Esportivo",
-        img: tenis,
-        desc: "Super confortável",
-        qtd_disp: 5,
-        preco_venda: 199.9,
+        img_url: tenis,
+        descricao: "Super confortável",
+        qtd_estoque: 5,
+        preco: 199.9,
         avaliacao: 5,
     },
     {
         id: "003",
         nome: "Mochila de nome grande para teste",
-        img: mochila,
-        desc: "Ajustável",
-        qtd_disp: 8,
-        preco_venda: 129.9,
+        img_url: mochila,
+        descricao: "Ajustável",
+        qtd_estoque: 8,
+        preco: 129.9,
         avaliacao: 3,
     },
     {
         id: "004",
         nome: "Boné Street",
-        img: bone,
-        desc: "Ajustável",
-        qtd_disp: 12,
-        preco_venda: 39.9,
+        img_url: bone,
+        descricao: "Ajustável",
+        qtd_estoque: 12,
+        preco: 39.9,
         avaliacao: 4,
     },
     {
         id: "005",
         nome: "Relógio",
-        img: relogio,
-        desc: "Relógio casual",
-        qtd_disp: 6,
-        preco_venda: 189.9,
+        img_url: relogio,
+        descricao: "Relógio casual",
+        qtd_estoque: 6,
+        preco: 189.9,
         avaliacao: 4,
     },
     {
         id: "006",
         nome: "Jaqueta Jeans",
-        img: jaqueta,
-        desc: "Estilo moderno",
-        qtd_disp: 4,
-        preco_venda: 159.9,
+        img_url: jaqueta,
+        descricao: "Estilo moderno",
+        qtd_estoque: 4,
+        preco: 159.9,
         avaliacao: 5,
     },
     {
         id: "007",
         nome: "Óculos de Sol",
-        img: oculos,
-        desc: "Proteção UV",
-        qtd_disp: 15,
-        preco_venda: 259.9,
+        img_url: oculos,
+        descricao: "Proteção UV",
+        qtd_estoque: 15,
+        preco: 259.9,
         avaliacao: 3,
     },
     {
         id: "008",
         nome: "Carteira Couro",
-        img: carteira,
-        desc: "Compacta",
-        qtd_disp: 9,
-        preco_venda: 69.9,
+        img_url: carteira,
+        descricao: "Compacta",
+        qtd_estoque: 9,
+        preco: 69.9,
         avaliacao: 4,
     },
     {
         id: "009",
         nome: "Fone Bluetooth",
-        img: fone,
-        desc: "Sem fio",
-        qtd_disp: 7,
-        preco_venda: 149.9,
+        img_url: fone,
+        descricao: "Sem fio",
+        qtd_estoque: 7,
+        preco: 149.9,
         avaliacao: 5,
     },
     {
         id: "010",
         nome: "Garrafa Térmica",
-        img: garrafa,
-        desc: "Mantém gelado/quente",
-        qtd_disp: 11,
-        preco_venda: 79.9,
+        img_url: garrafa,
+        descricao: "Mantém gelado/quente",
+        qtd_estoque: 11,
+        preco: 79.9,
         avaliacao: 4,
     },
 ];

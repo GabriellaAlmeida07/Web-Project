@@ -5,7 +5,7 @@ import Image from "next/image";
 import logo from "@/assets/logo.png";
 import carrinho from "@/assets/carrinho.png";
 import { IoIosChatboxes } from "react-icons/io";
-import { Pedido, prods_fake } from "@/entities/entities";
+import { Pedido, ProdutoProps } from "@/entities/entities";
 import { useEffect, useRef, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { formatarTotal } from "@/utils/formatacao";
@@ -13,10 +13,12 @@ import { BsEmojiNeutral } from "react-icons/bs";
 import { GrSend } from "react-icons/gr";
 import CardProduto from "@/components/Card/cardProduto";
 import Link from "next/link";
-import { FaBars, FaBoxOpen } from "react-icons/fa";
+import { FaBoxOpen, FaSpinner } from "react-icons/fa";
 import { CiLogout } from "react-icons/ci";
 
 export default function HomeCliente() {
+    const [produtos, setProdutos] = useState<ProdutoProps[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isOpenChat, setIsOpenChat] = useState<boolean>(false);
     const caixaRef = useRef<HTMLDivElement>(null);
@@ -35,17 +37,37 @@ export default function HomeCliente() {
         entregue: false,
     });
 
+    // Ao recarregar pega os produtos do banco
+    useEffect(() => {
+        async function carregarProdutos() {
+            try {
+                setLoading(true);
+                const res = await fetch("/api/produtos", { method: "GET" });
+
+                const data = await res.json();
+
+                setProdutos(data);
+            } catch (error) {
+                console.error("Erro ao carregar produtos:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        carregarProdutos();
+    }, []);
+
     function atualizarQuantidade(
         idProd: string,
         novaQtd: number,
-        qtd_disp: number,
+        qtd_estoque: number,
         preco: number
     ) {
         // Previne erros de conversão
         novaQtd = Number(novaQtd);
         preco = Number(preco);
 
-        if (novaQtd > qtd_disp) {
+        if (novaQtd > qtd_estoque) {
             console.log("Quantidade insuficiente");
             return;
         }
@@ -78,7 +100,7 @@ export default function HomeCliente() {
                 pedidoAtual.prods_associados.push({
                     prod_id: idProd,
                     qtd: novaQtd,
-                    preco_venda: preco,
+                    preco: preco,
                 });
             }
         }
@@ -152,52 +174,58 @@ export default function HomeCliente() {
                     </div>
 
                     <div className="flex gap-5">
-                    <Link href="/PedidosCliente">
-                        <button className="flex items-center gap-2 bg-teal-600 text-white border border-gray-300 px-2 py-2 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
-                            <FaBoxOpen />
-                            <span>Pedidos</span>
-                        </button>
-                    </Link>
+                        <Link href="/PedidosCliente">
+                            <button className="flex items-center gap-2 bg-teal-600 text-white border border-gray-300 px-2 py-2 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
+                                <FaBoxOpen />
+                                <span>Pedidos</span>
+                            </button>
+                        </Link>
 
-                    <IoIosChatboxes
-                        className="text-gray-500 mt-2 hover:text-gray-600"
-                        size={30}
-                        onClick={() => {
-                            setIsOpenChat(true);
-                        }}
-                    />
+                        <IoIosChatboxes
+                            className="text-gray-500 mt-2 hover:text-gray-600"
+                            size={30}
+                            onClick={() => {
+                                setIsOpenChat(true);
+                            }}
+                        />
 
-                    <Link href="/Login">
-                        <button className="bg-[#e5e5e5] border border-gray-400 text-black px-3 py-2 rounded flex items-center cursor-pointer gap-1">
-                            <CiLogout className="text-lg" />
-                            <span className="text-base font-semibold">
-                                Sair
-                            </span>
-                        </button>
-                    </Link>
+                        <Link href="/Login">
+                            <button className="bg-[#e5e5e5] border border-gray-400 text-black px-3 py-2 rounded flex items-center cursor-pointer gap-1">
+                                <CiLogout className="text-lg" />
+                                <span className="text-base font-semibold">
+                                    Sair
+                                </span>
+                            </button>
+                        </Link>
                     </div>
                 </header>
+
+                {loading && (
+                    <div className="flex items-center justify-center">
+                        <FaSpinner className="animate-spin text-gray-600 text-4xl" />
+                    </div>
+                )}
 
                 {/* Conteúdo (produtos) */}
                 <div className="p-3 overflow-y-auto">
                     <div className="flex flex-wrap pb-3">
-                        {prods_fake.map((p, i) => (
+                        {produtos.map((p, i) => (
                             <CardProduto
                                 key={i}
                                 id={p.id}
                                 nome={p.nome}
-                                img={p.img}
-                                desc={p.desc}
-                                qtd_disp={p.qtd_disp}
-                                preco_venda={p.preco_venda}
+                                img_url={p.img_url}
+                                descricao={p.descricao}
+                                qtd_estoque={p.qtd_estoque}
+                                preco={p.preco}
                                 avaliacao={p.avaliacao}
                                 quantidade={getQtd(p.id)}
                                 onChangeQtd={(novaQtd) =>
                                     atualizarQuantidade(
                                         p.id,
                                         novaQtd,
-                                        p.qtd_disp,
-                                        p.preco_venda
+                                        p.qtd_estoque,
+                                        p.preco
                                     )
                                 }
                                 tipo="cliente"
@@ -267,7 +295,7 @@ export default function HomeCliente() {
                             {/* Lista dos produtos selecionados */}
                             <div className="flex-1 overflow-y-auto pb-50">
                                 {pedido.prods_associados.map((prod) => {
-                                    const produto = prods_fake.find(
+                                    const produto = produtos.find(
                                         (p) => p.id === prod.prod_id
                                     );
 
@@ -286,8 +314,8 @@ export default function HomeCliente() {
                                                             atualizarQuantidade(
                                                                 prod.prod_id,
                                                                 prod.qtd - 1,
-                                                                produto.qtd_disp,
-                                                                produto.preco_venda
+                                                                produto.qtd_estoque,
+                                                                produto.preco
                                                             )
                                                         }
                                                         className="w-7 h-7 flex items-center disabled:opacity-50 justify-center border-2 border-[#F08FAF] text-black rounded select-none"
@@ -335,8 +363,8 @@ export default function HomeCliente() {
                                                                             atualizarQuantidade(
                                                                                 prod.prod_id,
                                                                                 valor,
-                                                                                produto.qtd_disp,
-                                                                                produto.preco_venda
+                                                                                produto.qtd_estoque,
+                                                                                produto.preco
                                                                             );
                                                                         }
 
@@ -361,8 +389,8 @@ export default function HomeCliente() {
                                                             atualizarQuantidade(
                                                                 prod.prod_id,
                                                                 prod.qtd + 1,
-                                                                produto.qtd_disp,
-                                                                produto.preco_venda
+                                                                produto.qtd_estoque,
+                                                                produto.preco
                                                             )
                                                         }
                                                         className="w-7 h-7 flex items-center disabled:opacity-50 justify-center border-2 border-[#F08FAF] text-black rounded select-none"
@@ -376,15 +404,12 @@ export default function HomeCliente() {
                                                 </div>
 
                                                 <div className="text-center">
-                                                    {produto.preco_venda.toFixed(
-                                                        2
-                                                    )}
+                                                    {produto.preco.toFixed(2)}
                                                 </div>
 
                                                 <div className="text-center">
                                                     {(
-                                                        produto.preco_venda *
-                                                        prod.qtd
+                                                        produto.preco * prod.qtd
                                                     ).toFixed(2)}
                                                 </div>
                                             </div>
