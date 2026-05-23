@@ -9,10 +9,10 @@ import { FaPen, FaRegStar, FaStar, FaTrash } from "react-icons/fa";
 export default function CardProduto({
     id,
     nome,
-    img,
-    desc,
-    qtd_disp,
-    preco_venda,
+    img_url,
+    descricao,
+    qtd_estoque,
+    preco,
     avaliacao,
     quantidade,
     onChangeQtd,
@@ -28,7 +28,7 @@ export default function CardProduto({
     }
 
     function aumentar() {
-        if (quantidade < qtd_disp) {
+        if (quantidade < qtd_estoque) {
             onChangeQtd(quantidade + 1);
         }
     }
@@ -43,7 +43,7 @@ export default function CardProduto({
                 {/* Imagem */}
                 <div className="relative h-24 w-full">
                     <Image
-                        src={img!}
+                        src={img_url!}
                         alt="Produto"
                         className="w-full h-24 cursor-pointer"
                         priority
@@ -60,18 +60,18 @@ export default function CardProduto({
 
                     <div className="text-base w-36 h-10 overflow-x-auto overflow-y-hidden whitespace-nowrap px-2">
                         {" "}
-                        {desc}{" "}
+                        {descricao}{" "}
                     </div>
 
                     <div>
                         Preço:{" "}
                         <span className="font-bold">
-                            R$ {preco_venda.toFixed(2)}{" "}
+                            R$ {preco.toFixed(2)}{" "}
                         </span>
                     </div>
 
                     <div>
-                        Qtd: <span className="font-bold">{qtd_disp} </span>{" "}
+                        Qtd: <span className="font-bold">{qtd_estoque} </span>{" "}
                     </div>
 
                     {/* Avaliação */}
@@ -114,7 +114,7 @@ export default function CardProduto({
                                         debounceRef.current = setTimeout(() => {
                                             if (
                                                 valor >= 0 &&
-                                                valor <= qtd_disp &&
+                                                valor <= qtd_estoque &&
                                                 onChangeQtd
                                             ) {
                                                 onChangeQtd(valor);

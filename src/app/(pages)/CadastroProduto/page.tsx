@@ -5,16 +5,23 @@ import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { ProdutoProps } from "@/entities/entities";
+import { FaSpinner } from "react-icons/fa";
+import { filtraDigitos, formatMoeda } from "@/utils/formatacao";
+import { toast } from "sonner";
 
 export default function CadastroProduto() {
-    const [produto, setProduto] = useState<ProdutoProps>({
+    const initialProduto = {
         id: "",
         nome: "",
-        img: undefined,
-        desc: "",
-        qtd_disp: 0,
-        preco_venda: 0,
-    });
+        img_url: undefined,
+        descricao: "",
+        qtd_estoque: 0,
+        preco: 0,
+    };
+
+    const [loading, setLoading] = useState(false);
+    // Produto props é apenas para definir o tipo
+    const [produto, setProduto] = useState<ProdutoProps>(initialProduto);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -23,7 +30,7 @@ export default function CadastroProduto() {
         setProduto({
             ...produto,
             [name]:
-                name === "qtd_disp" || name === "preco_venda"
+                name === "qtd_estoque" || name === "preco"
                     ? Number(value)
                     : value,
         });
@@ -34,16 +41,48 @@ export default function CadastroProduto() {
         if (file) {
             setProduto({
                 ...produto,
-                img: URL.createObjectURL(file) as unknown as StaticImageData,
+                img_url: URL.createObjectURL(
+                    file
+                ) as unknown as StaticImageData,
             });
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Aqui simulamos o "Create" do CRUD
-        alert(`Sucesso! O produto "${produto.nome}" foi salvo no console.`);
-        console.log("Novo Produto:", produto);
+        try {
+            setLoading(true);
+
+            // Chama a API a partir da rota definida
+            const res = await fetch("/api/produtos", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    nome: produto.nome,
+                    descricao: produto.descricao,
+                    preco: produto.preco,
+                    qtd_estoque: produto.qtd_estoque,
+                    img_url_url: null,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error);
+            }
+
+            toast.success("Produto cadastrado com sucesso!");
+            console.log(data);
+            setProduto(initialProduto);
+        } catch (error) {
+            console.error(error);
+            toast.error("Erro ao cadastrar produto");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const inputStyle =
@@ -68,22 +107,10 @@ export default function CadastroProduto() {
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-5 text-base text-gray-700">
-                    <div className="flex flex-col gap-1">
-                        <label className="font-medium  ml-1">
-                            ID Identificador
-                        </label>
-                        <input
-                            required
-                            type="text"
-                            name="id"
-                            value={produto.id}
-                            onChange={handleChange}
-                            className={inputStyle}
-                            placeholder="Ex: PROD-001"
-                        />
-                    </div>
-
+                <form
+                    onSubmit={handleSubmit}
+                    className="space-y-5 text-base text-gray-700"
+                >
                     <div className="flex flex-col gap-1">
                         <label className="font-medium  ml-1">
                             Nome do Item
@@ -105,8 +132,8 @@ export default function CadastroProduto() {
                         </label>
                         <textarea
                             required
-                            name="desc"
-                            value={produto.desc}
+                            name="descricao"
+                            value={produto.descricao}
                             onChange={handleChange}
                             className={`${inputStyle} h-24 resize-none`}
                             placeholder="Conte mais sobre o produto..."
@@ -115,16 +142,39 @@ export default function CadastroProduto() {
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1">
-                            <label className="font-medium  ml-1">
-                                Estoque
-                            </label>
+                            <label className="font-medium  ml-1">Estoque</label>
                             <input
                                 required
                                 min={0}
-                                type="number"
-                                name="qtd_disp"
-                                value={produto.qtd_disp}
-                                onChange={handleChange}
+                                placeholder="0"
+                                type="text"
+                                inputMode="numeric"
+                                name="qtd_estoque"
+                                value={
+                                    produto.qtd_estoque === 0
+                                        ? ""
+                                        : produto.qtd_estoque
+                                }
+                                onChange={(e) => {
+                                    const val = e.target.value;
+
+                                    if (val === "") {
+                                        setProduto({
+                                            ...produto,
+                                            qtd_estoque: 0,
+                                        });
+                                        return;
+                                    }
+
+                                    const num = Number(val);
+
+                                    if (!isNaN(num)) {
+                                        setProduto({
+                                            ...produto,
+                                            qtd_estoque: num,
+                                        });
+                                    }
+                                }}
                                 className={inputStyle}
                             />
                         </div>
@@ -134,12 +184,32 @@ export default function CadastroProduto() {
                             </label>
                             <input
                                 required
-                                min={0}
-                                step="0.01"
-                                type="number"
-                                name="preco_venda"
-                                value={produto.preco_venda}
-                                onChange={handleChange}
+                                type="text"
+                                placeholder="R$ 0,00"
+                                value={
+                                    produto.preco
+                                        ? formatMoeda(produto.preco)
+                                        : ""
+                                }
+                                onChange={(e) => {
+                                    const digitsOnly = filtraDigitos(
+                                        e.target.value
+                                    );
+
+                                    const limitedDigits = digitsOnly.slice(
+                                        0,
+                                        18
+                                    );
+
+                                    const numericValue = limitedDigits
+                                        ? parseInt(limitedDigits, 10) / 100
+                                        : 0;
+
+                                    setProduto({
+                                        ...produto,
+                                        preco: numericValue,
+                                    });
+                                }}
                                 className={inputStyle}
                             />
                         </div>
@@ -156,10 +226,10 @@ export default function CadastroProduto() {
                                 onChange={handleFileChange}
                                 className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer"
                             />
-                            {produto.img && (
+                            {produto.img_url && (
                                 <div className="relative w-16 h-16 rounded-lg overflow-hidden border-2 border-teal-200">
                                     <Image
-                                        src={produto.img}
+                                        src={produto.img_url}
                                         alt="Preview"
                                         fill
                                         className="object-cover"
@@ -171,9 +241,17 @@ export default function CadastroProduto() {
 
                     <button
                         type="submit"
-                        className="w-full bg-teal-600 text-white py-3 rounded-xl font-medium text-lg hover:bg-teal-700 shadow-lg shadow-teal-100 transition-all active:scale-95 mt-4"
+                        disabled={loading}
+                        className="w-full bg-teal-600 text-white py-3 rounded-xl font-medium text-lg hover:bg-teal-700 shadow-lg shadow-teal-100 transition-all active:scale-95 mt-4 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
-                        Salvar Produto
+                        {loading ? (
+                            <>
+                                <FaSpinner className="animate-spin" />
+                                Salvando...
+                            </>
+                        ) : (
+                            "Salvar Produto"
+                        )}
                     </button>
                 </form>
             </div>
