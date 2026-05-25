@@ -33,6 +33,14 @@ export default function CardProduto({
         }
     }
 
+    // Ao clicar no botão editar
+    // Chame a rota /api/produtos/${idProduto} com método PUT
+    // Crie uma função de edição no produto.controller.ts
+
+    // Ao clicar no botão excluir
+    // Chame a rota /api/produtos/${idProduto} com método DELETE
+    // Crie uma função de deleção no produto.controller.ts
+
     return (
         <main>
             <div

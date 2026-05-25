@@ -57,7 +57,7 @@ export default function CardPedido({ pedido, tipo }: Props) {
     return (
         <main className="w-full sm:w-[450px] shrink-0">
             {/* Card principal do pedido */}
-            <div className="relative w-full h-[410px] border-2 border-teal-600 rounded-lg p-5 flex flex-col bg-white shadow-sm hover:shadow-md transition text-black">
+            <div className="relative w-full h-[460px] sm:h-[410px] border-2 border-teal-600 rounded-lg p-5 flex flex-col bg-white shadow-sm hover:shadow-md transition text-black">
                 {/* Cabeçalho do card: título e status */}
                 <div className="flex justify-between items-start mb-3 border-b border-gray-100 pb-3 gap-4">
                     <div className="flex flex-col min-w-0">
@@ -153,11 +153,16 @@ export default function CardPedido({ pedido, tipo }: Props) {
                             </div>
                         ))}
 
-                    {tipo === "vendedor" && !pedido.entregue && (
-                        <button className="w-full h-10 bg-teal-600 hover:bg-teal-700 transition rounded font-semibold text-white">
-                            Marcar como entregue
-                        </button>
-                    )}
+                    {tipo === "vendedor" &&
+                        (!pedido.entregue ? (
+                            <button className="w-full h-10 bg-teal-600 hover:bg-teal-700 transition rounded font-semibold text-white">
+                                Marcar como entregue
+                            </button>
+                        ) : (
+                            <span className="block mt-3 w-full border border-gray-300 p-2 text-center font-semibold text-black rounded">
+                                Já entregue
+                            </span>
+                        ))}
                 </div>
             </div>
 

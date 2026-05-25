@@ -8,7 +8,8 @@ export type ProdutoProps = {
     qtd_estoque: number;
     preco: number;
     avaliacao?: number; // De 0-5
-    tipo?: "vendedor" | "cliente"; // Para sabermos o tipo de usuário "logado", já que ainda não temos autenticação
+
+    tipo?: "vendedor" | "cliente"; // Para sabermos o tipo de usuário logado
 };
 
 export type Props = ProdutoProps & {
@@ -56,7 +57,7 @@ export interface Msg {
 }
 
 export type MsgProps = {
-    msg: Msg; //Como saber alternar bonitinho resposta pergunta resposta pergunta se cliente pode enviar varias msgs abaixo da outra sem resposta
+    msg: Msg;
     onResponder: (msg: Msg) => void;
 };
 
