@@ -1,17 +1,63 @@
 "use client";
 
-import { PedidoProps, prods_fake } from "@/entities/entities";
-import { useState } from "react";
+import { PedidoProps, ProdutoProps } from "@/entities/entities";
+import { useEffect, useState } from "react";
 import CardProdPedido from "./cardProdPedido";
 import { IoClose } from "react-icons/io5";
+import { FaSpinner } from "react-icons/fa";
+import { formatarData } from "@/utils/formatacao";
 
-export default function CardPedido({ pedido, user }: PedidoProps) {
+type Props = {
+    pedido: PedidoProps;
+    tipo: "cliente" | "vendedor";
+};
+
+export default function CardPedido({ pedido, tipo }: Props) {
+    const [loading, setLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [produtosPedido, setProdutosPedido] = useState<
+        Record<string, ProdutoProps>
+    >({});
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        async function carregarProdutosPedido() {
+            const produtosObj: Record<string, ProdutoProps> = {};
+            setLoading(true);
+
+            for (const item of pedido.itens) {
+                const res = await fetch(`/api/produtos/${item.id_produto}`);
+
+                const produto = await res.json();
+
+                produtosObj[item.id_produto] = produto;
+            }
+
+            setProdutosPedido(produtosObj);
+            console.log(produtosObj);
+            setLoading(false);
+        }
+
+        carregarProdutosPedido();
+    }, [isOpen, pedido.itens]);
+
+    // Ao clicar no botão editar
+    // Chame a rota /api/pedidos/${idPedido} com método PUT
+    // Crie uma função de edição no pedido.controller.ts
+
+    // A lógica para marcar como entregue (se vendedor) é apenas uma edição,
+    // ou seja, apenas use a lógica que vc criar para editar um pedido passando
+    // pedido.entregue = true
+
+    // Ao clicar no botão excluir
+    // Chame a rota /api/pedidos/${idPedido} com método DELETE
+    // Crie uma função de deleção no pedido.controller.ts
 
     return (
         <main className="w-full sm:w-[450px] shrink-0">
             {/* Card principal do pedido */}
-            <div className="relative w-full h-[370px] border-2 border-teal-600 rounded-lg p-5 flex flex-col bg-white shadow-sm hover:shadow-md transition text-black">
+            <div className="relative w-full h-[410px] border-2 border-teal-600 rounded-lg p-5 flex flex-col bg-white shadow-sm hover:shadow-md transition text-black">
                 {/* Cabeçalho do card: título e status */}
                 <div className="flex justify-between items-start mb-3 border-b border-gray-100 pb-3 gap-4">
                     <div className="flex flex-col min-w-0">
@@ -20,7 +66,8 @@ export default function CardPedido({ pedido, user }: PedidoProps) {
                         </span>
 
                         <span className="text-base text-gray-500 mt-0.5">
-                            Realizada em: {pedido.data_registro ?? "Sem data"}
+                            Realizada em:{" "}
+                            {formatarData(pedido.data_registro) ?? "Sem data"}
                         </span>
                     </div>
 
@@ -34,31 +81,45 @@ export default function CardPedido({ pedido, user }: PedidoProps) {
                         </span>
                     )}
                 </div>
+
                 {/* Informações */}
                 <div className="text-base space-y-2 mb-4 bg-gray-50 p-3 rounded border border-gray-100 break-words">
-                    {user === "vendedor" && (
-                        <div>
-                            <span className="font-bold text-teal-600">
-                                Cliente:
+                    {tipo === "vendedor" ? (
+                        <div className="space-y-2">
+                            <div>
+                                <span className="font-bold text-teal-600">
+                                    Cliente:
+                                </span>{" "}
+                                {pedido.Usuario?.nome}
+                            </div>
+
+                            <div>
+                                <span className="font-bold text-teal-600">
+                                    Telefone:
+                                </span>{" "}
+                                {pedido.Usuario?.celular}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="mt-3">
+                            <span className="font-bold text-teal-600 mb-1">
+                                Quantidade total de itens:
                             </span>{" "}
-                            Maria
+                            {pedido.itens.reduce(
+                                (total, item) => total + item.qtd,
+                                0
+                            )}{" "}
                         </div>
                     )}
 
                     <div>
                         <span className="font-bold text-teal-600">
-                            Telefone:
-                        </span>{" "}
-                        (11) 99999-9999
-                    </div>
-
-                    <div>
-                        <span className="font-bold text-teal-600">
-                            Endereço:
+                            Endereço para entrega:
                         </span>{" "}
                         {pedido.endereco_entrega}
                     </div>
                 </div>
+
                 {/* Botão ver produtos + total */}
                 <div className="text-base flex justify-between items-center mb-4 gap-3">
                     <button
@@ -72,9 +133,10 @@ export default function CardPedido({ pedido, user }: PedidoProps) {
                         Total: R$ {pedido.valor_total.toFixed(2)}
                     </div>
                 </div>
+
                 {/* Rodapé */}
                 <div className="mt-2 pt-3 text-base border-t border-gray-200">
-                    {user === "cliente" &&
+                    {tipo === "cliente" &&
                         (pedido.entregue ? (
                             <span className="block mt-3 w-full border border-gray-300 p-2 text-center font-semibold text-black rounded">
                                 Já entregue
@@ -91,7 +153,7 @@ export default function CardPedido({ pedido, user }: PedidoProps) {
                             </div>
                         ))}
 
-                    {user === "vendedor" && !pedido.entregue && (
+                    {tipo === "vendedor" && !pedido.entregue && (
                         <button className="w-full h-10 bg-teal-600 hover:bg-teal-700 transition rounded font-semibold text-white">
                             Marcar como entregue
                         </button>
@@ -116,25 +178,30 @@ export default function CardPedido({ pedido, user }: PedidoProps) {
                             </button>
                         </div>
 
+                        {loading && (
+                            <div className="flex items-center justify-center m-5">
+                                <FaSpinner className="animate-spin text-gray-600 text-4xl" />
+                            </div>
+                        )}
+
                         <div className="flex-1 overflow-y-auto p-4 bg-[#FDF6F6]">
-                            {pedido.prods_associados.map((prod) => {
-                                const p = prods_fake.find(
-                                    (p) => p.id === prod.prod_id
-                                );
+                            {pedido.itens &&
+                                pedido.itens.map((prod) => {
+                                    const p = produtosPedido[prod.id_produto];
 
-                                if (!p) return null;
+                                    if (!p) return null;
 
-                                return (
-                                    <CardProdPedido
-                                        key={prod.prod_id}
-                                        {...p}
-                                        quantidade={prod.qtd}
-                                        tipo={user}
-                                        preco={prod.preco}
-                                        onChangeQtd={() => {}}
-                                    />
-                                );
-                            })}
+                                    return (
+                                        <CardProdPedido
+                                            key={p.id}
+                                            {...p}
+                                            quantidade={prod.qtd}
+                                            tipo={tipo}
+                                            preco={prod.preco_unitario}
+                                            onChangeQtd={() => {}}
+                                        />
+                                    );
+                                })}
                         </div>
                     </div>
                 </div>

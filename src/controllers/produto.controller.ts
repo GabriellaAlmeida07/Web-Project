@@ -1,7 +1,6 @@
 import Produto from "@/models/produto.model";
 
 export class ProdutoController {
-
     async cadastrarProduto(data: any) {
         const produto = await Produto.create({
             nome: data.nome,
@@ -18,4 +17,12 @@ export class ProdutoController {
     async findAllProdutos() {
         return await Produto.findAll();
     }
+
+    async findById(id: string) {
+        return await Produto.findByPk(id);
+    }
+
+    // Editar produto
+
+    // Excluir produto
 }

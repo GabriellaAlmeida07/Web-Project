@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 export default function CadastroProduto() {
     const initialProduto = {
-        id: "",
+        id: 0,
         nome: "",
         img_url: undefined,
         descricao: "",
