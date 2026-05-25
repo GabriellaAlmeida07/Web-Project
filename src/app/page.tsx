@@ -5,22 +5,19 @@ import Link from "next/link";
 import logo from "@/assets/logo.png";
 import { ProdutoProps } from "@/entities/entities";
 import { useEffect, useRef, useState } from "react";
-import {
-    FaBars,
-    FaBoxOpen,
-    FaClipboardList,
-    FaPlus,
-    FaSpinner,
-} from "react-icons/fa";
+import { FaBoxOpen, FaClipboardList, FaPlus, FaSpinner } from "react-icons/fa";
 import { CiLogout } from "react-icons/ci";
 import CardProduto from "@/components/Card/cardProduto";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { useRouter } from "next/navigation";
 
 export default function HomeVendedor() {
     const [produtos, setProdutos] = useState<ProdutoProps[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const caixaRef = useRef<HTMLDivElement>(null);
     const [isOpen, setIsOpen] = useState<boolean>(false);
+
+    const router = useRouter();
 
     // Ao recarregar pega os produtos do banco
     useEffect(() => {
@@ -59,10 +56,22 @@ export default function HomeVendedor() {
         };
     }, [isOpen]);
 
+    async function handleLogout() {
+        try {
+            await fetch("/api/logout", {
+                method: "POST",
+            });
+
+            router.push("/Login");
+        } catch (error) {
+            console.error("Erro ao deslogar:", error);
+        }
+    }
+
     return (
         <main className="min-h-screen bg-[#FDF6F6] text-black">
             <div className="h-screen grid grid-rows-[auto_1fr]">
-                {/* Header Vendedor */}
+                {/* Header */}
                 <header className="bg-[#e5e5e5] px-4 sm:px-6 md:px-4 py-3 gap-2 flex justify-between items-center shadow-lg border-b-4 border-teal-600">
                     {/* Logo e título */}
                     <div className="flex items-center gap-4">
@@ -110,26 +119,28 @@ export default function HomeVendedor() {
                             <RxHamburgerMenu size={30} />
                         </button>
 
-                        <Link href="/Login">
-                            <button className="bg-[#e5e5e5] border border-gray-400 text-black px-3 py-2 rounded flex items-center cursor-pointer gap-1">
-                                <CiLogout className="text-lg" />
-                                <span className="text-base font-semibold">
-                                    Sair
-                                </span>
-                            </button>
-                        </Link>
+                        <button
+                            onClick={handleLogout}
+                            className="bg-[#e5e5e5] border border-gray-400 text-black px-3 py-2 rounded flex items-center cursor-pointer gap-1"
+                        >
+                            <CiLogout className="text-lg" />
+                            <span className="text-base font-semibold">
+                                Sair
+                            </span>
+                        </button>
                     </div>
 
                     {/* Logout Telas Grandes */}
                     <div className="hidden md:block">
-                        <Link href="/Login">
-                            <button className="bg-[#e5e5e5] border border-gray-400 text-black px-3 py-2 rounded flex items-center cursor-pointer gap-1 hover:bg-gray-100 transition-colors">
-                                <CiLogout className="text-lg" />
-                                <span className="text-base font-semibold">
-                                    Sair
-                                </span>
-                            </button>
-                        </Link>
+                        <button
+                            onClick={handleLogout}
+                            className="bg-[#e5e5e5] border border-gray-400 text-black px-3 py-2 rounded flex items-center cursor-pointer gap-1 hover:bg-gray-100 transition-colors"
+                        >
+                            <CiLogout className="text-lg" />
+                            <span className="text-base font-semibold">
+                                Sair
+                            </span>
+                        </button>
                     </div>
                 </header>
 
@@ -241,7 +252,7 @@ export default function HomeVendedor() {
                                 {/* Pedidos */}
                                 <Link href="/PedidosVendedor">
                                     <button
-                                            className="
+                                        className="
                                                 w-full px-6 py-4
                                                 flex items-center gap-4
                                                 hover:bg-teal-50
@@ -271,21 +282,20 @@ export default function HomeVendedor() {
 
                             {/* Footer */}
                             <div className="px-6">
-                                <Link href="/Login">
-                                    <button
-                                        className="
-                                w-full py-3 rounded-2xl
-                                border border-gray-300
-                                flex items-center justify-center gap-2
-                                font-semibold
-                                hover:bg-gray-100
-                                transition-colors
-                            "
-                                    >
-                                        <CiLogout size={20} />
-                                        Sair da Conta
-                                    </button>
-                                </Link>
+                                <button
+                                    onClick={handleLogout}
+                                    className="
+                                            w-full py-3 rounded-2xl
+                                            border border-gray-300
+                                            flex items-center justify-center gap-2
+                                            font-semibold
+                                            hover:bg-gray-100
+                                            transition-colors
+                                        "
+                                >
+                                    <CiLogout size={20} />
+                                    Sair da Conta
+                                </button>
                             </div>
                         </div>
                     </div>

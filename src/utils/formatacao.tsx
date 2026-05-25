@@ -15,3 +15,9 @@ export function formatMoeda(value: number): string {
 export function filtraDigitos(value: string): string {
     return value.replace(/\D/g, "");
 }
+
+export function formatarData(timestamp: string | number) {
+    const data = new Date(Number(timestamp));
+
+    return data.toLocaleDateString("pt-BR");
+}

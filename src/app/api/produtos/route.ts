@@ -1,5 +1,4 @@
 import { ProdutoController } from "@/controllers/produto.controller";
-import { initDb } from "@/models/alteracoes";
 
 export const runtime = "nodejs";
 

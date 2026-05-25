@@ -3,12 +3,37 @@
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/logo.png";
-import { FaBoxOpen } from "react-icons/fa";
-import { pedidosFake } from "@/entities/entities";
+import { FaBoxOpen, FaSpinner } from "react-icons/fa";
 import CardPedido from "@/components/Card/cardPedido";
 import { IoStorefrontOutline } from "react-icons/io5";
+import { PedidoProps } from "@/entities/entities";
+import { useEffect, useState } from "react";
 
 export default function PedidosCliente() {
+    const [pedidos, setPedidos] = useState<PedidoProps[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    // Ao recarregar a página pega os pedidos no banco
+    useEffect(() => {
+        async function carregarPedidos() {
+            try {
+                setLoading(true);
+                const res = await fetch("/api/pedidos", { method: "GET" });
+
+                const data = await res.json();
+
+                setPedidos(data);
+                console.log(data)
+            } catch (error) {
+                console.error("Erro ao carregar pedidos:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        carregarPedidos();
+    }, []);
+
     return (
         <main className="min-h-screen bg-[#FDF6F6] text-black">
             <div className="h-screen grid grid-rows-[auto_1fr]">
@@ -46,25 +71,31 @@ export default function PedidosCliente() {
                         </div>
                     </div>
 
+                    {loading && (
+                        <div className="flex items-center justify-center">
+                            <FaSpinner className="animate-spin text-gray-600 text-4xl" />
+                        </div>
+                    )}
+
                     {/* Área dos cards*/}
                     <div className="flex flex-wrap gap-6 justify-center pb-10">
                         {/* Verifica se existem pedidos cadastrados no array. 
                             Se houver, cria um card para cada um.
                             Se não houver, exibe uma mensagem.
                         */}
-                        {pedidosFake.length > 0 ? (
-                            pedidosFake.map((pedido) => (
-                                <CardPedido
-                                    key={pedido.id}
-                                    pedido={pedido}
-                                    user={"cliente"}
-                                />
-                            ))
-                        ) : (
-                            <p className="text-gray-500 text-center w-full mt-10">
-                                Você ainda não tem pedidos realizados.
-                            </p>
-                        )}
+                        {pedidos.length > 0
+                            ? pedidos.map((pedido) => (
+                                  <CardPedido
+                                      key={pedido.id}
+                                      pedido={pedido}
+                                      tipo={"cliente"}
+                                  />
+                              ))
+                            : loading ?? (
+                                  <p className="text-gray-500 text-center w-full mt-10">
+                                      Você ainda não tem pedidos realizados.
+                                  </p>
+                              )}
                     </div>
                 </div>
             </div>
