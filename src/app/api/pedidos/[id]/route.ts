@@ -8,7 +8,7 @@ type Params = {
 
 // Use pedido.controller.ts
 
-// Chame essa rota no componente Pedido ao clicar no botão de editar
+// Chame essa rota no componente cardPedido ao clicar no botão de editar
 // export async function PUT() {
 //     try {
         // Fução do controller
@@ -18,7 +18,7 @@ type Params = {
 //     }
 // }
 
-// Chame essa rota no componente Pedido ao clicar no botão de excluir
+// Chame essa rota no componente cardPedido ao clicar no botão de excluir
 // export async function DELETE() {
 //     try {
         // Fução do controller

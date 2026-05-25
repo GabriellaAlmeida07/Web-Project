@@ -43,7 +43,7 @@ export default function Login() {
                 throw new Error(data.error);
             }
 
-            toast.success("Login realizado com sucesso, redirecionando...");
+            // toast.success("Login realizado com sucesso, redirecionando...");
 
             // Redireciona baseado no tipo de usuário logado
             if (data.tipo === "cliente") {

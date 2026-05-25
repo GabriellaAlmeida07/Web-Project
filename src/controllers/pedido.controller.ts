@@ -58,6 +58,7 @@ export class PedidoController {
         }
     }
 
+    // Usado na página PedidosVendedor
     async findAllPedidos() {
         const pedidos = await Pedido.findAll({
             include: [
@@ -90,6 +91,7 @@ export class PedidoController {
         }));
     }
 
+    // Usado na página PedidosCliente
     async findPedidosCliente(id: string) {
         const pedidos = await Pedido.findAll({
             where: {

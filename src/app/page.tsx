@@ -19,7 +19,7 @@ export default function HomeVendedor() {
 
     const router = useRouter();
 
-    // Ao recarregar pega os produtos do banco
+    // Ao carregar/recarregar pega os produtos do banco
     useEffect(() => {
         async function carregarProdutos() {
             try {
