@@ -114,7 +114,7 @@ export default function CardPedido({ pedido, tipo }: Props) {
 
                     <div>
                         <span className="font-bold text-teal-600">
-                            Endereço para entrega:
+                            Endereço:
                         </span>{" "}
                         {pedido.endereco_entrega}
                     </div>
@@ -155,7 +155,7 @@ export default function CardPedido({ pedido, tipo }: Props) {
 
                     {tipo === "vendedor" &&
                         (!pedido.entregue ? (
-                            <button className="w-full h-10 bg-teal-600 hover:bg-teal-700 transition rounded font-semibold text-white">
+                            <button className="w-full mt-3 h-10 bg-teal-600 hover:bg-teal-700 transition rounded font-semibold text-white">
                                 Marcar como entregue
                             </button>
                         ) : (
