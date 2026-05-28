@@ -1,4 +1,6 @@
 import { ProdutoController } from "@/controllers/produto.controller";
+import cloudinary from '@/utils/cloudinary'; // Importação do Cloudinary que você criou
+import { NextResponse } from 'next/server';
 
 export const runtime = "nodejs";
 
@@ -6,11 +8,45 @@ const controller = new ProdutoController();
 
 export async function POST(req: Request) {
     try {
-        const body = await req.json();
+        // Em vez de ler JSON, agora lê FormData (para suportar o arquivo de imagem)
+        const formData = await req.formData();
+        const file = formData.get('imagem') as File | null;
 
-        const produto = await controller.cadastrarProduto(body);
+        let imgUrl = ""; // Se a imagem for opcional, começa vazio
 
-        return Response.json(
+        // Se enviaram uma imagem, fazemos o upload no Cloudinary
+        if (file && file.size > 0) {
+            const bytes = await file.arrayBuffer();
+            const buffer = Buffer.from(bytes);
+
+            const uploadResult = await new Promise<any>((resolve, reject) => {
+                const uploadStream = cloudinary.uploader.upload_stream(
+                    { folder: 'produtos-devweb' },
+                    (error, result) => {
+                        if (error) reject(error);
+                        else resolve(result);
+                    }
+                );
+                uploadStream.end(buffer);
+            });
+
+            imgUrl = uploadResult.secure_url; // Pega a URL gerada
+        }
+
+        // Montamos o objeto (body) extraindo os dados do FormData
+        // Como o FormData envia tudo como texto, converte os números (parseFloat/parseInt)
+        const produtoData = {
+            nome: formData.get('nome') as string,
+            descricao: formData.get('descricao') as string,
+            preco: parseFloat(formData.get('preco') as string) || 0,
+            qtd_estoque: parseInt(formData.get('qtd_estoque') as string) || 0,
+            avaliacao: parseInt(formData.get('avaliacao') as string) || 0,
+            img_url: imgUrl // Adiciona a URL pronta para ir pro banco
+        };
+
+        const produto = await controller.cadastrarProduto(produtoData);
+
+        return NextResponse.json(
             {
                 message: "Produto criado com sucesso!",
                 produto,
@@ -18,7 +54,8 @@ export async function POST(req: Request) {
             { status: 201 }
         );
     } catch (error) {
-        return Response.json(
+        console.error("Erro no cadastro:", error);
+        return NextResponse.json(
             { message: "Erro ao criar produto", error: String(error) },
             { status: 500 }
         );
@@ -29,9 +66,9 @@ export async function GET() {
     try {
         const produtos = await controller.findAllProdutos();
 
-        return Response.json(produtos);
+        return NextResponse.json(produtos);
     } catch (error) {
-        return Response.json(
+        return NextResponse.json(
             {
                 message: "Erro ao buscar produtos",
                 error: String(error),
