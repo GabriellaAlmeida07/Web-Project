@@ -22,6 +22,7 @@ export default function CadastroProduto() {
     const [loading, setLoading] = useState(false);
     // Produto props é apenas para definir o tipo
     const [produto, setProduto] = useState<ProdutoProps>(initialProduto);
+    const [file, setFile] = useState<File | null>(null);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -39,44 +40,39 @@ export default function CadastroProduto() {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setProduto({
-                ...produto,
-                img_url: URL.createObjectURL(
-                    file
-                ) as unknown as StaticImageData,
-            });
+            setFile(file);
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
         try {
             setLoading(true);
 
-            // Chama a API a partir da rota definida
+            const formData = new FormData();
+
+            formData.append("nome", produto.nome);
+            formData.append("descricao", produto.descricao);
+            formData.append("preco", String(produto.preco));
+            formData.append("qtd_estoque", String(produto.qtd_estoque));
+
+            if (file) {
+                formData.append("img", file);
+            }
+
             const res = await fetch("/api/produtos", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    nome: produto.nome,
-                    descricao: produto.descricao,
-                    preco: produto.preco,
-                    qtd_estoque: produto.qtd_estoque,
-                    img_url_url: null,
-                }),
+                body: formData,
             });
 
             const data = await res.json();
 
-            if (!res.ok) {
-                throw new Error(data.error);
-            }
+            if (!res.ok) throw new Error(data.error);
 
             toast.success("Produto cadastrado com sucesso!");
-            console.log(data);
             setProduto(initialProduto);
+            setFile(null);
         } catch (error) {
             console.error(error);
             toast.error("Erro ao cadastrar produto");
@@ -84,7 +80,7 @@ export default function CadastroProduto() {
             setLoading(false);
         }
     };
-
+    
     const inputStyle =
         "border-2 border-gray-200 p-2 rounded-md outline-none focus:border-teal-500 transition-all bg-gray-50";
 
@@ -226,10 +222,10 @@ export default function CadastroProduto() {
                                 onChange={handleFileChange}
                                 className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer"
                             />
-                            {produto.img_url && (
+                            {file && (
                                 <div className="relative w-16 h-16 rounded-lg overflow-hidden border-2 border-teal-200">
                                     <Image
-                                        src={produto.img_url}
+                                        src={URL.createObjectURL(file!)}
                                         alt="Preview"
                                         fill
                                         className="object-cover"

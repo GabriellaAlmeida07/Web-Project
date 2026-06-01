@@ -1,5 +1,5 @@
 import { ProdutoController } from "@/controllers/produto.controller";
-import cloudinary from "@/utils/cloudinary"; // Importação do Cloudinary que você criou
+import cloudinary from "@/cloudinary/config"; // Importação do Cloudinary 
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -10,8 +10,7 @@ export async function POST(req: Request) {
     try {
         // Em vez de ler JSON, agora lê FormData (para suportar o arquivo de imagem)
         const formData = await req.formData();
-        const file = formData.get("imagem") as File | null;
-
+        const file = formData.get("img") as File | null;
         let imgUrl = ""; // Se a imagem for opcional, começa vazio
 
         // Se enviaram uma imagem, fazemos o upload no Cloudinary
