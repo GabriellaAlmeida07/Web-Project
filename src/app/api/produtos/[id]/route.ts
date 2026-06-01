@@ -25,27 +25,34 @@ export async function GET(req: Request, { params }: Params) {
             },
             {
                 status: 500,
-            }
+            },
         );
     }
 }
 
 // Chame essa rota na página HomeCliente ao clicar no botão de editar
-// export async function PUT() {
-//     try {
-        // Fução do controller
-//         controller.suaFuncaoDeEdicaoDoProduto();
-//     } catch (error) {
+export async function PUT(req: Request, { params }: Params) {
+    try {
+        const { id } = await params;
+        const body = await req.json(); // Pega os dados enviados pelo formulário do front-end
 
-//     }
-// }
+        const resultado = await controller.update(id, body);
+
+        return Response.json(resultado, { status: 200 });
+    } catch (error) {
+        return Response.json({ error: String(error) }, { status: 500 });
+    }
+}
 
 // Chame essa rota na página HomeCliente ao clicar no botão de excluir
-// export async function DELETE() {
-//     try {
-        // Fução do controller
-//         controller.suaFuncaoDeDelecaoDoProduto();
-//     } catch (error) {
+export async function DELETE(req: Request, { params }: Params) {
+    try {
+        const { id } = await params;
 
-//     }
-// }
+        const resultado = await controller.delete(id);
+
+        return Response.json(resultado, { status: 200 });
+    } catch (error) {
+        return Response.json({ error: String(error) }, { status: 500 });
+    }
+}

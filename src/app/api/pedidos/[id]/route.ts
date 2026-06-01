@@ -1,29 +1,34 @@
-import { ProdutoController } from "@/controllers/produto.controller";
+import { PedidoController } from "@/controllers/pedido.controller";
 
 export const runtime = "nodejs";
+const controller = new PedidoController();
 
 type Params = {
     params: Promise<{ id: string }>;
 };
 
-// Use pedido.controller.ts
+// Editar pedido ou marcar como entregue - PUT
+export async function PUT(req: Request, { params }: Params) {
+    try {
+        const { id } = await params;
+        const body = await req.json(); // Pega os dados enviados pelo formulário do front-end
+        const resultado = await controller.update(id, body);
 
-// Chame essa rota no componente cardPedido ao clicar no botão de editar
-// export async function PUT() {
-//     try {
-        // Fução do controller
-//         controller.suaFuncaoDeEdicaoDoPedido();
-//     } catch (error) {
+        return Response.json(resultado, { status: 200 });
+    } catch (error) {
+        return Response.json({ error: String(error) }, { status: 500 });
+    }
+}
 
-//     }
-// }
+// Excluir Pedido - DELETE
+export async function DELETE(req: Request, { params }: Params) {
+    try {
+        const { id } = await params;
 
-// Chame essa rota no componente cardPedido ao clicar no botão de excluir
-// export async function DELETE() {
-//     try {
-        // Fução do controller
-//         controller.suaFuncaoDeDelecaoDoPedido();
-//     } catch (error) {
+        const resultado = await controller.delete(id);
 
-//     }
-// }
+        return Response.json(resultado, { status: 200 });
+    } catch (error) {
+        return Response.json({ error: String(error) }, { status: 500 });
+    }
+}

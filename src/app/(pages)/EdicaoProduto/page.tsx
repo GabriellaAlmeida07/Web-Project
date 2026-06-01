@@ -5,12 +5,13 @@ import Image, { StaticImageData } from "next/image";
 import { ProdutoProps } from "@/entities/entities";
 import Link from "next/link";
 import { IoArrowBackOutline, IoTrashOutline } from "react-icons/io5";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation"; // Adicionado useRouter para navegar após ações
 import { FaSpinner } from "react-icons/fa";
 import { toast } from "sonner";
 
 export default function EdicaoProduto() {
     const searchParams = useSearchParams();
+    const router = useRouter(); // Ativado para poder redirecionar o usuário
     const idProduto = searchParams.get("id");
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -46,7 +47,7 @@ export default function EdicaoProduto() {
     }, [idProduto]);
 
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {
         const { name, value } = e.target;
         setProduto({
@@ -64,30 +65,61 @@ export default function EdicaoProduto() {
             setProduto({
                 ...produto,
                 img_url: URL.createObjectURL(
-                    file
+                    file,
                 ) as unknown as StaticImageData,
             });
         }
     };
 
-    const handleAtualizar = (e: React.FormEvent) => {
+    // FUNÇÃO ATUALIZAR IMPLEMENTADA COM MÉTODO PUT 👇
+    const handleAtualizar = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Chame a rota /api/produtos/${idProduto} com método PUT
-        // Crie uma função de atualização no produto.controller.ts
+        try {
+            const response = await fetch(`/api/produtos/${idProduto}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    nome: produto.nome,
+                    descricao: produto.descricao,
+                    preco: produto.preco,
+                    qtd_estoque: produto.qtd_estoque,
+                    img_url: produto.img_url, // Se vocês forem salvar strings/URLs de imagens
+                }),
+            });
 
-        toast.success("Alterações salvas com sucesso! Verifique o console.");
-        console.log("Produto atualizado:", produto);
+            if (response.ok) {
+                toast.success("Alterações salvas com sucesso!");
+                router.push("/"); // Redireciona de volta para a home do vendedor após salvar
+            } else {
+                toast.error("Erro ao salvar as alterações do produto.");
+            }
+        } catch (error) {
+            console.error("Erro na requisição PUT:", error);
+            toast.error("Erro ao conectar com o servidor.");
+        }
     };
 
-    const handleExcluir = () => {
-        // Confirmação de segurança para o Delete
+    // FUNÇÃO EXCLUIR IMPLEMENTADA COM MÉTODO DELETE 👇
+    const handleExcluir = async () => {
         if (window.confirm("ATENÇÃO: Deseja realmente excluir este produto?")) {
-            // Chame a rota /api/produtos/${idProduto} com método DELETE
-            // Crie uma função de deleção no produto.controller.ts
+            try {
+                const response = await fetch(`/api/produtos/${idProduto}`, {
+                    method: "DELETE",
+                });
 
-            toast.info("Produto excluído com sucesso!");
-            console.log("Excluindo produto ID:", produto.id);
+                if (response.ok) {
+                    toast.info("Produto excluído com sucesso!");
+                    router.push("/"); // Redireciona para a home já que o produto não existe mais
+                } else {
+                    toast.error("Erro ao excluir o produto.");
+                }
+            } catch (error) {
+                console.error("Erro na requisição DELETE:", error);
+                toast.error("Erro ao conectar com o servidor.");
+            }
         }
     };
 
@@ -97,7 +129,6 @@ export default function EdicaoProduto() {
     return (
         <main className="min-h-screen bg-[#F8F9FA] text-black flex items-center justify-center p-5 font-sans">
             <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-lg relative border-t-8 border-teal-600">
-                {/* Navegação simples via Link */}
                 <Link
                     href="/"
                     className="absolute top-6 left-6 bg-[#F08FAF] text-white border p-2 rounded-lg flex items-center gap-1 font-semibold transition-colors"
@@ -147,9 +178,10 @@ export default function EdicaoProduto() {
                             <label className="text-base font-medium text-gray-700 ml-1">
                                 Descrição
                             </label>
+                            {/* AJUSTADO AQUI: alterado name="desc" para name="descricao" 👇 */}
                             <textarea
                                 required
-                                name="desc"
+                                name="descricao"
                                 value={produto.descricao}
                                 onChange={handleChange}
                                 className={`${inputStyle} h-24 resize-none`}

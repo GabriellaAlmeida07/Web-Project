@@ -22,7 +22,29 @@ export class ProdutoController {
         return await Produto.findByPk(id);
     }
 
-    // Editar produto
+    async update(id: string, dados: any) {
+        const [linhasAfetadas] = await Produto.update(dados, {
+            where: { id: Number(id) },
+        });
 
-    // Excluir produto
+        if (linhasAfetadas === 0) {
+            throw new Error(
+                "Produto não encontrado ou nenhum dado foi alterado",
+            );
+        }
+
+        return { message: "Produto atualizado com sucesso!" };
+    }
+
+    async delete(id: string) {
+        const linhasDeletadas = await Produto.destroy({
+            where: { id: Number(id) },
+        });
+
+        if (linhasDeletadas === 0) {
+            throw new Error("Produto não encontrado.");
+        }
+
+        return { message: "Produto excluído com sucesso!" };
+    }
 }

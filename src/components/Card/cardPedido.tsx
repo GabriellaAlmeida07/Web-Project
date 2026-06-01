@@ -42,17 +42,76 @@ export default function CardPedido({ pedido, tipo }: Props) {
         carregarProdutosPedido();
     }, [isOpen, pedido.itens]);
 
-    // Ao clicar no botão editar
-    // Chame a rota /api/pedidos/${idPedido} com método PUT
-    // Crie uma função de edição no pedido.controller.ts
+    // Cole esta função dentro do seu componente CardPedido
+    async function editarPedido() {
+        // 1. Abre uma caixinha no navegador perguntando o novo endereço
+        const novoEndereco = prompt(
+            "Digite o novo endereço de entrega para este pedido:",
+        );
 
-    // A lógica para marcar como entregue (se vendedor) é apenas uma edição,
-    // ou seja, apenas use a lógica que vc criar para editar um pedido passando
-    // pedido.entregue = true
+        // Se o usuário clicar em cancelar ou deixar vazio, cancela a função
+        if (!novoEndereco) return;
 
-    // Ao clicar no botão excluir
-    // Chame a rota /api/pedidos/${idPedido} com método DELETE
-    // Crie uma função de deleção no pedido.controller.ts
+        try {
+            const response = await fetch(`/api/pedidos/${pedido.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    endereco_entrega: novoEndereco, // O seu PedidoController vai receber isso em 'dados'
+                }),
+            });
+
+            if (response.ok) {
+                alert("Pedido atualizado com sucesso!");
+                window.location.reload(); // Atualiza a tela para mostrar o novo endereço no card
+            } else {
+                alert("Erro ao editar o pedido.");
+            }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+            alert("Erro ao conectar com o servidor.");
+        }
+    }
+
+    async function marcarComoEntregue() {
+        try {
+            const response = await fetch(`/api/pedidos/${pedido.id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ entregue: true }), // Passa o dado pro seu controller receber
+            });
+
+            if (response.ok) {
+                alert("Pedido marcado como entregue!");
+                window.location.reload();
+            } else {
+                alert("Erro ao atualizar o pedido");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function deletarPedido() {
+        if (confirm("Deseja mesmo excluir este pedido?")) {
+            try {
+                const response = await fetch(`/api/pedidos/${pedido.id}`, {
+                    method: "DELETE",
+                });
+
+                if (response.ok) {
+                    alert("Pedido excluído!");
+                    window.location.reload();
+                } else {
+                    alert("Erro ao excluir o pedido");
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }
 
     return (
         <main className="w-full sm:w-[450px] shrink-0">
@@ -107,7 +166,7 @@ export default function CardPedido({ pedido, tipo }: Props) {
                             </span>{" "}
                             {pedido.itens.reduce(
                                 (total, item) => total + item.qtd,
-                                0
+                                0,
                             )}{" "}
                         </div>
                     )}
@@ -143,11 +202,17 @@ export default function CardPedido({ pedido, tipo }: Props) {
                             </span>
                         ) : (
                             <div className="flex mt-3 gap-2">
-                                <button className="w-full h-10 bg-red-400 hover:bg-red-500 transition rounded font-semibold text-white">
+                                <button
+                                    onClick={deletarPedido}
+                                    className="w-full h-10 bg-red-400 hover:bg-red-500 transition rounded font-semibold text-white"
+                                >
                                     Cancelar
                                 </button>
 
-                                <button className="w-full h-10 bg-teal-600 hover:bg-teal-700 transition rounded font-semibold text-white">
+                                <button
+                                    onClick={editarPedido}
+                                    className="w-full h-10 bg-teal-600 hover:bg-teal-700 transition rounded font-semibold text-white"
+                                >
                                     Editar
                                 </button>
                             </div>
@@ -155,7 +220,10 @@ export default function CardPedido({ pedido, tipo }: Props) {
 
                     {tipo === "vendedor" &&
                         (!pedido.entregue ? (
-                            <button className="w-full mt-3 h-10 bg-teal-600 hover:bg-teal-700 transition rounded font-semibold text-white">
+                            <button
+                                onClick={marcarComoEntregue}
+                                className="w-full mt-3 h-10 bg-teal-600 hover:bg-teal-700 transition rounded font-semibold text-white"
+                            >
                                 Marcar como entregue
                             </button>
                         ) : (

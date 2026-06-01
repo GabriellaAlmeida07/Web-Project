@@ -3,6 +3,7 @@
 import { Props } from "@/entities/entities";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { FaPen, FaRegStar, FaStar, FaTrash } from "react-icons/fa";
 
@@ -16,8 +17,9 @@ export default function CardProduto({
     avaliacao,
     quantidade,
     onChangeQtd,
-    tipo
+    tipo,
 }: Props) {
+    const router = useRouter();
     const [digitando, setDigitando] = useState<string | null>(null);
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -33,13 +35,29 @@ export default function CardProduto({
         }
     }
 
-    // Ao clicar no botão editar
-    // Chame a rota /api/produtos/${idProduto} com método PUT
-    // Crie uma função de edição no produto.controller.ts
+    async function editarProduto() {
+        router.push(`/EdicaoProduto?id=${id}`);
+    }
 
-    // Ao clicar no botão excluir
-    // Chame a rota /api/produtos/${idProduto} com método DELETE
-    // Crie uma função de deleção no produto.controller.ts
+    async function deletarProduto() {
+        if (confirm("Tem certeza que deseja excluir este produto?")) {
+            try {
+                const response = await fetch(`/api/produtos/${id}`, {
+                    method: "DELETE",
+                });
+
+                if (response.ok) {
+                    alert("Produto excluído!");
+                    window.location.reload();
+                } else {
+                    alert("Erro ao excluir produto");
+                }
+            } catch (error) {
+                console.error("Erro na requisição:", error);
+                alert("Erro ao conectar com o servidor");
+            }
+        }
+    }
 
     return (
         <main>
@@ -79,7 +97,8 @@ export default function CardProduto({
                     </div>
 
                     <div>
-                        Qtd: <span className="font-bold">{qtd_estoque} </span>{" "}
+                        Qtd:{" "}
+                        <span className="font-bold">{qtd_estoque} </span>{" "}
                     </div>
 
                     {/* Avaliação */}
@@ -89,7 +108,7 @@ export default function CardProduto({
                                 <FaStar key={i} />
                             ) : (
                                 <FaRegStar key={i} />
-                            )
+                            ),
                         )}
                     </div>
 
@@ -98,7 +117,6 @@ export default function CardProduto({
                         {/* Cliente */}
                         {tipo === "cliente" && (
                             <div className="flex items-center w-32 gap-2 bg-teal-600 rounded-lg shadow px-2 py-1">
-                                
                                 <button
                                     onClick={diminuir}
                                     className="w-7 h-7 bg-teal-700 text-white rounded"
@@ -146,14 +164,16 @@ export default function CardProduto({
                         {/* Vendedor */}
                         {tipo === "vendedor" && (
                             <div className="flex gap-3">
-                                
-                                <Link href={`/EdicaoProduto?id=${id}`}>
-                                    <button className="w-10 h-10 flex items-center justify-center bg-teal-600 text-white rounded hover:bg-teal-700">
-                                        <FaPen />
-                                    </button>
-                                </Link>
+                                {/* Chamando a função ao clicar */}
+                                <button
+                                    onClick={editarProduto}
+                                    className="w-10 h-10 flex items-center justify-center bg-teal-600 text-white rounded hover:bg-teal-700"
+                                >
+                                    <FaPen />
+                                </button>
 
                                 <button
+                                    onClick={deletarProduto}
                                     className="w-10 h-10 flex items-center justify-center bg-red-400 text-white rounded hover:bg-red-500"
                                 >
                                     <FaTrash />

@@ -17,7 +17,7 @@ export class PedidoController {
                     entregue: data.entregue,
                     id_cliente: data.id_cliente,
                 },
-                { transaction: t }
+                { transaction: t },
             );
 
             for (const item of data.itens) {
@@ -38,7 +38,7 @@ export class PedidoController {
                         id_pedido: pedido.dataValues.id,
                         id_produto: item.id_produto,
                     },
-                    { transaction: t }
+                    { transaction: t },
                 );
 
                 await Produto.decrement(
@@ -46,7 +46,7 @@ export class PedidoController {
                     {
                         where: { id: item.id_produto },
                         transaction: t,
-                    }
+                    },
                 );
             }
 
@@ -122,7 +122,23 @@ export class PedidoController {
         }));
     }
 
-    // Editar pedido
+    async update(id: string, dados: any) {
+        const [linhasAfetadas] = await Pedido.update(dados, {
+            where: { id: Number(id) },
+        });
 
-    // Cancelar pedido
+        return { message: "Pedido atualizado com sucesso!" };
+    }
+
+    async delete(id: string) {
+        const linhasDeletadas = await Pedido.destroy({
+            where: { id: Number(id) },
+        });
+
+        if (linhasDeletadas === 0) {
+            throw new Error("Pedido não encontrado.");
+        }
+
+        return { message: "Pedido excluído com sucesso!" };
+    }
 }
