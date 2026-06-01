@@ -66,15 +66,21 @@ export default function CardProduto({
                     "w-36 md:w-44 h-96 border-2 border-teal-600 rounded-lg shadow-lg mt-5 ml-5 flex flex-col gap-5 overflow-hidden"
                 }
             >
-                {/* Imagem */}
+                {/* Imagem */} 
                 <div className="relative h-24 w-full">
+                {img_url ? (
                     <Image
-                        src={img_url!}
-                        alt="Produto"
-                        className="w-full h-24 cursor-pointer"
-                        priority
-                        style={{ cursor: "pointer" }}
+                    src={img_url}
+                    alt="Produto"
+                    width={400}
+                    height={400}
+                    className="w-full h-24 object-cover cursor-pointer"
                     />
+                ) : (
+                    <div className="w-full h-24 bg-gray-200 flex items-center justify-center text-sm text-gray-500 cursor-pointer">
+                    Sem foto
+                    </div>
+                )}
                 </div>
 
                 {/* Informações */}
