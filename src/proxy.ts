@@ -11,7 +11,6 @@ const clienteRoutes = ["/HomeCliente", "/PedidosCliente"];
 
 // Rotas do vendedor
 const vendedorRoutes = [
-    "/HomeVendedor",
     "/CadastroProduto",
     "/EdicaoProduto",
     "/PedidosVendedor",
@@ -56,7 +55,7 @@ export function proxy(request: NextRequest) {
             }
 
             if (isVendedor) {
-                url.pathname = "/HomeVendedor";
+                url.pathname = "/";
             }
 
             return NextResponse.redirect(url);
@@ -70,7 +69,7 @@ export function proxy(request: NextRequest) {
 
         // Vendedor tentando acessar área cliente
         if (isClienteRoute && !isCliente) {
-            url.pathname = "/HomeVendedor";
+            url.pathname = "/";
             return NextResponse.redirect(url);
         }
 
@@ -92,7 +91,6 @@ export const config = {
         "/HomeCliente",
         "/PedidosCliente",
 
-        "/HomeVendedor",
         "/CadastroProduto",
         "/PedidosVendedor",
         "/EdicaoProduto",
