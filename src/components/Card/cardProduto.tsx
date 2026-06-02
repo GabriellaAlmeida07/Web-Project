@@ -2,10 +2,10 @@
 
 import { Props } from "@/entities/entities";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { FaPen, FaRegStar, FaStar, FaTrash } from "react-icons/fa";
+import { FaPen, FaRegStar, FaSpinner, FaStar, FaTrash } from "react-icons/fa";
+import { toast } from "sonner";
 
 export default function CardProduto({
     id,
@@ -21,6 +21,8 @@ export default function CardProduto({
 }: Props) {
     const router = useRouter();
     const [digitando, setDigitando] = useState<string | null>(null);
+    const [loadingExclusao, setLoadingExclusao] = useState(false);
+    const [showConfirmacao, setShowConfirmacao] = useState(false);
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
     function diminuir() {
@@ -40,22 +42,26 @@ export default function CardProduto({
     }
 
     async function deletarProduto() {
-        if (confirm("Tem certeza que deseja excluir este produto?")) {
-            try {
-                const response = await fetch(`/api/produtos/${id}`, {
-                    method: "DELETE",
-                });
+        try {
+            setLoadingExclusao(true);
+            const response = await fetch(`/api/produtos/${id}`, {
+                method: "DELETE",
+            });
 
-                if (response.ok) {
-                    alert("Produto excluído!");
+            if (response.ok) {
+                toast.info("Produto excluído!");
+                setTimeout(() => {
+                    // Espera 2s antes de recarregar
                     window.location.reload();
-                } else {
-                    alert("Erro ao excluir produto");
-                }
-            } catch (error) {
-                console.error("Erro na requisição:", error);
-                alert("Erro ao conectar com o servidor");
+                }, 2000);
+            } else {
+                toast.error("Erro ao excluir produto");
             }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+            toast.error("Erro ao conectar com o servidor");
+        } finally {
+            setLoadingExclusao(false);
         }
     }
 
@@ -66,21 +72,21 @@ export default function CardProduto({
                     "w-36 md:w-44 h-96 border-2 border-teal-600 rounded-lg shadow-lg mt-5 ml-5 flex flex-col gap-5 overflow-hidden"
                 }
             >
-                {/* Imagem */} 
+                {/* Imagem */}
                 <div className="relative h-24 w-full">
-                {img_url ? (
-                    <Image
-                    src={img_url}
-                    alt="Produto"
-                    width={400}
-                    height={400}
-                    className="w-full h-24 object-cover cursor-pointer"
-                    />
-                ) : (
-                    <div className="w-full h-24 bg-gray-200 flex items-center justify-center text-sm text-gray-500 cursor-pointer">
-                    Sem foto
-                    </div>
-                )}
+                    {img_url ? (
+                        <Image
+                            src={img_url}
+                            alt="Produto"
+                            width={400}
+                            height={400}
+                            className="w-full h-24 object-cover cursor-pointer"
+                        />
+                    ) : (
+                        <div className="w-full h-24 bg-gray-200 flex items-center justify-center text-sm text-gray-500 cursor-pointer">
+                            Sem foto
+                        </div>
+                    )}
                 </div>
 
                 {/* Informações */}
@@ -103,8 +109,7 @@ export default function CardProduto({
                     </div>
 
                     <div>
-                        Qtd:{" "}
-                        <span className="font-bold">{qtd_estoque} </span>{" "}
+                        Qtd: <span className="font-bold">{qtd_estoque} </span>{" "}
                     </div>
 
                     {/* Avaliação */}
@@ -114,7 +119,7 @@ export default function CardProduto({
                                 <FaStar key={i} />
                             ) : (
                                 <FaRegStar key={i} />
-                            ),
+                            )
                         )}
                     </div>
 
@@ -179,7 +184,7 @@ export default function CardProduto({
                                 </button>
 
                                 <button
-                                    onClick={deletarProduto}
+                                    onClick={() => setShowConfirmacao(true)}
                                     className="w-10 h-10 flex items-center justify-center bg-red-400 text-white rounded hover:bg-red-500"
                                 >
                                     <FaTrash />
@@ -189,6 +194,41 @@ export default function CardProduto({
                     </div>
                 </div>
             </div>
+
+            {/* Confirmação de exclusão */}
+            {showConfirmacao && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[200]">
+                    <div className="bg-white px-6 py-5 rounded-lg shadow-lg text-center max-w-sm w-full">
+                        <p className="text-lg font-semibold text-gray-800">
+                            Deseja mesmo excluir este produto?
+                        </p>
+
+                        <div className="flex gap-3 mt-5">
+                            <button
+                                onClick={() => setShowConfirmacao(false)}
+                                className="w-1/2 bg-gray-300 py-2 rounded hover:bg-gray-400"
+                            >
+                                Não
+                            </button>
+
+                            <button
+                                onClick={deletarProduto}
+                                disabled={loadingExclusao}
+                                className="w-1/2 bg-red-500 text-white py-2 flex flex-row items-center gap-2 justify-center rounded hover:bg-red-600"
+                            >
+                                {loadingExclusao ? (
+                                    <>
+                                        <FaSpinner className="animate-spin" />
+                                        Excluindo...
+                                    </>
+                                ) : (
+                                    "Sim"
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </main>
     );
 }

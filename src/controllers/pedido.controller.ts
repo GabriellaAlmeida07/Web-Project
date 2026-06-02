@@ -17,7 +17,7 @@ export class PedidoController {
                     entregue: data.entregue,
                     id_cliente: data.id_cliente,
                 },
-                { transaction: t },
+                { transaction: t }
             );
 
             for (const item of data.itens) {
@@ -38,7 +38,7 @@ export class PedidoController {
                         id_pedido: pedido.dataValues.id,
                         id_produto: item.id_produto,
                     },
-                    { transaction: t },
+                    { transaction: t }
                 );
 
                 await Produto.decrement(
@@ -46,7 +46,7 @@ export class PedidoController {
                     {
                         where: { id: item.id_produto },
                         transaction: t,
-                    },
+                    }
                 );
             }
 
@@ -83,7 +83,10 @@ export class PedidoController {
             ...pedido.toJSON(),
 
             itens: pedido.itens.map((prod: any) => ({
-                ...prod.toJSON(),
+                id_produto: prod.id,
+                nome: prod.nome,
+                img_url: prod.img_url,
+                descricao: prod.descricao,
 
                 qtd: prod.ItemPedido.qtd,
                 preco_unitario: prod.ItemPedido.preco_unitario,
@@ -114,7 +117,10 @@ export class PedidoController {
             ...pedido.toJSON(),
 
             itens: pedido.itens.map((prod: any) => ({
-                ...prod.toJSON(),
+                id_produto: prod.id,
+                nome: prod.nome,
+                img_url: prod.img_url,
+                descricao: prod.descricao,
 
                 qtd: prod.ItemPedido.qtd,
                 preco_unitario: prod.ItemPedido.preco_unitario,
@@ -131,14 +137,49 @@ export class PedidoController {
     }
 
     async delete(id: string) {
-        const linhasDeletadas = await Pedido.destroy({
-            where: { id: Number(id) },
-        });
-
-        if (linhasDeletadas === 0) {
-            throw new Error("Pedido não encontrado.");
+        const t = await sequelize.transaction();
+    
+        try {
+            const pedido = await Pedido.findByPk(Number(id), {
+                include: [{ model: Produto, as: "itens" }],
+                transaction: t,
+            });
+    
+            if (!pedido) {
+                throw new Error("Pedido não encontrado.");
+            }
+    
+            // Devolve produtos ao estoque
+            for (const item of (pedido as any).itens) {
+                const qtd = item.ItemPedido.qtd;
+    
+                await Produto.increment(
+                    { qtd_estoque: qtd },
+                    {
+                        where: { id: item.id },
+                        transaction: t,
+                    }
+                );
+            }
+    
+            // Remove itens do pedido 
+            await ItemPedido.destroy({
+                where: { id_pedido: Number(id) },
+                transaction: t,
+            });
+    
+            // Remove pedido
+            await Pedido.destroy({
+                where: { id: Number(id) },
+                transaction: t,
+            });
+    
+            await t.commit();
+    
+            return { message: "Pedido excluído com sucesso!" };
+        } catch (error) {
+            await t.rollback();
+            throw error;
         }
-
-        return { message: "Pedido excluído com sucesso!" };
     }
 }

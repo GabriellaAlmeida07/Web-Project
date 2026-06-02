@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { ProdutoProps } from "@/entities/entities";

@@ -24,12 +24,19 @@ export default function CardProdPedido({
         <main className="w-full">
             <div className="w-full border-2 border-[#14B8A6] rounded-lg shadow-sm p-3 mb-4 flex flex-col md:flex-row items-center gap-4 bg-white transition-all">
                 <div className="relative h-20 w-20 flex-shrink-0">
-                    <Image
-                        src={img_url!}
-                        alt={nome}
-                        className="w-full h-full object-contain rounded"
-                        priority
-                    />
+                    {img_url ? (
+                        <Image
+                            src={img_url}
+                            alt={nome}
+                            width={80}
+                            height={80}
+                            className="object-contain rounded"
+                        />
+                    ) : (
+                        <div className="w-20 h-20 bg-gray-200 flex items-center justify-center text-xs">
+                            Sem imagem
+                        </div>
+                    )}
                 </div>
 
                 {/* Área de informações */}

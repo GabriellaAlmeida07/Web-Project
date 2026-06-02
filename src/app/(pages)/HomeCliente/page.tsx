@@ -339,7 +339,7 @@ export default function HomeCliente() {
                                 </div>
                             ) : (
                                 <div className="flex flex-col h-full">
-                                    <div className="text-pretty text-lg font-medium my-4 mx-2 p-2 flex items-center justify-center rounded border-2 box-decoration-slice border-gray-400">
+                                    <div className="text-pretty text-lg font-medium my-4 mx-0 p-2 flex items-center justify-center rounded border-2 box-decoration-slice border-gray-400">
                                         {" "}
                                         Seu pedido{" "}
                                     </div>
@@ -537,7 +537,7 @@ export default function HomeCliente() {
                                     </button>
                                 </div>
 
-                                <div className="text-pretty text-lg font-medium my-4 mx-2 p-2 flex items-center justify-center rounded border-2 box-decoration-slice border-gray-400">
+                                <div className="text-pretty text-lg font-medium my-4 mx-0 p-2 flex items-center justify-center rounded border-2 box-decoration-slice border-gray-400">
                                     {" "}
                                     Finalizar pedido{" "}
                                 </div>
@@ -616,7 +616,7 @@ export default function HomeCliente() {
                         </button>
                     </div>
 
-                    <div className="text-pretty text-lg font-medium my-4 mx-2 p-2 flex items-center justify-center rounded border-2 box-decoration-slice border-gray-400">
+                    <div className="text-pretty text-lg font-medium my-4 mx-0 p-2 flex items-center justify-center rounded border-2 box-decoration-slice border-gray-400">
                         {" "}
                         Chat com o vendedor{" "}
                     </div>

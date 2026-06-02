@@ -5,13 +5,16 @@ import Image, { StaticImageData } from "next/image";
 import { ProdutoProps } from "@/entities/entities";
 import Link from "next/link";
 import { IoArrowBackOutline, IoTrashOutline } from "react-icons/io5";
-import { useSearchParams, useRouter } from "next/navigation"; // Adicionado useRouter para navegar após ações
+import { useSearchParams, useRouter } from "next/navigation"; // useRouter para navegar após ações
 import { FaSpinner } from "react-icons/fa";
 import { toast } from "sonner";
 
 export default function EdicaoProduto() {
     const searchParams = useSearchParams();
     const router = useRouter(); // Ativado para poder redirecionar o usuário
+    const [showConfirmacao, setShowConfirmacao] = useState(false);
+    const [loadingEdicao, setLoadingEdicao] = useState(false);
+    const [loadingExclusao, setLoadingExclusao] = useState(false);
     const idProduto = searchParams.get("id");
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -33,11 +36,7 @@ export default function EdicaoProduto() {
                 const produto_res = await res.json();
 
                 if (produto_res) {
-                    setProduto({
-                        ...produto_res,
-                        img_url:
-                            produto_res.img_url as unknown as StaticImageData,
-                    });
+                    setProduto(produto_res);
                 }
 
                 setLoading(false);
@@ -47,7 +46,7 @@ export default function EdicaoProduto() {
     }, [idProduto]);
 
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
         const { name, value } = e.target;
         setProduto({
@@ -65,17 +64,18 @@ export default function EdicaoProduto() {
             setProduto({
                 ...produto,
                 img_url: URL.createObjectURL(
-                    file,
+                    file
                 ) as unknown as StaticImageData,
             });
         }
     };
 
-    // FUNÇÃO ATUALIZAR IMPLEMENTADA COM MÉTODO PUT 👇
+    // Atualizar (método PUT)
     const handleAtualizar = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
+            setLoadingEdicao(true);
             const response = await fetch(`/api/produtos/${idProduto}`, {
                 method: "PUT",
                 headers: {
@@ -86,7 +86,7 @@ export default function EdicaoProduto() {
                     descricao: produto.descricao,
                     preco: produto.preco,
                     qtd_estoque: produto.qtd_estoque,
-                    img_url: produto.img_url, // Se vocês forem salvar strings/URLs de imagens
+                    img_url: produto.img_url,
                 }),
             });
 
@@ -99,27 +99,30 @@ export default function EdicaoProduto() {
         } catch (error) {
             console.error("Erro na requisição PUT:", error);
             toast.error("Erro ao conectar com o servidor.");
+        } finally {
+            setLoadingEdicao(false);
         }
     };
 
-    // FUNÇÃO EXCLUIR IMPLEMENTADA COM MÉTODO DELETE 👇
+    // Excluir (método DELETE)
     const handleExcluir = async () => {
-        if (window.confirm("ATENÇÃO: Deseja realmente excluir este produto?")) {
-            try {
-                const response = await fetch(`/api/produtos/${idProduto}`, {
-                    method: "DELETE",
-                });
+        try {
+            setLoadingExclusao(true);
+            const response = await fetch(`/api/produtos/${idProduto}`, {
+                method: "DELETE",
+            });
 
-                if (response.ok) {
-                    toast.info("Produto excluído com sucesso!");
-                    router.push("/"); // Redireciona para a home já que o produto não existe mais
-                } else {
-                    toast.error("Erro ao excluir o produto.");
-                }
-            } catch (error) {
-                console.error("Erro na requisição DELETE:", error);
-                toast.error("Erro ao conectar com o servidor.");
+            if (response.ok) {
+                toast.info("Produto excluído com sucesso!");
+                router.push("/");
+            } else {
+                toast.error("Erro ao excluir o produto.");
             }
+        } catch (error) {
+            console.error("Erro na requisição DELETE:", error);
+            toast.error("Erro ao conectar com o servidor.");
+        } finally {
+            setLoadingExclusao(false);
         }
     };
 
@@ -178,7 +181,7 @@ export default function EdicaoProduto() {
                             <label className="text-base font-medium text-gray-700 ml-1">
                                 Descrição
                             </label>
-                            {/* AJUSTADO AQUI: alterado name="desc" para name="descricao" 👇 */}
+
                             <textarea
                                 required
                                 name="descricao"
@@ -247,16 +250,24 @@ export default function EdicaoProduto() {
                         <div className="flex gap-3 pt-6 border-t border-gray-100">
                             <button
                                 type="button"
-                                onClick={handleExcluir}
+                                onClick={() => setShowConfirmacao(true)}
                                 className="w-1/3 bg-white text-red-500 border-2 border-red-500 py-3 rounded-xl font-medium hover:bg-red-50 transition-all flex items-center justify-center gap-2"
                             >
                                 <IoTrashOutline size={20} /> Excluir
                             </button>
                             <button
                                 type="submit"
-                                className="w-2/3 bg-teal-600 text-white py-3 rounded-xl font-medium text-lg hover:bg-teal-700 shadow-lg shadow-teal-100 transition-all active:scale-95"
+                                disabled={loadingEdicao}
+                                className="w-2/3 bg-teal-600 flex flex-row gap-2 items-center justify-center text-white py-3 rounded-xl font-medium text-lg hover:bg-teal-700 shadow-lg shadow-teal-100 transition-all active:scale-95"
                             >
-                                Salvar Alterações
+                                {loadingEdicao ? (
+                                    <>
+                                        <FaSpinner className="animate-spin" />
+                                        Salvando...
+                                    </>
+                                ) : (
+                                    "Salvar Alterações"
+                                )}
                             </button>
                         </div>
                     </form>
@@ -266,6 +277,41 @@ export default function EdicaoProduto() {
                     </div>
                 )}
             </div>
+
+            {/* Confirmação de exclusão */}
+            {showConfirmacao && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[200]">
+                    <div className="bg-white px-6 py-5 rounded-lg shadow-lg text-center max-w-sm w-full">
+                        <p className="text-lg font-semibold text-gray-800">
+                            Deseja mesmo excluir este produto?
+                        </p>
+
+                        <div className="flex gap-3 mt-5">
+                            <button
+                                onClick={() => setShowConfirmacao(false)}
+                                className="w-1/2 bg-gray-300 py-2 rounded hover:bg-gray-400"
+                            >
+                                Não
+                            </button>
+
+                            <button
+                                onClick={handleExcluir}
+                                disabled={loadingExclusao}
+                                className="w-1/2 bg-red-500 flex flex-row items-center gap-2 justify-center text-white py-2 rounded hover:bg-red-600"
+                            >
+                                {loadingExclusao ? (
+                                    <>
+                                        <FaSpinner className="animate-spin" />
+                                        Excluindo...
+                                    </>
+                                ) : (
+                                    "Sim"
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </main>
     );
 }

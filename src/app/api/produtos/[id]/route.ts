@@ -30,7 +30,7 @@ export async function GET(req: Request, { params }: Params) {
     }
 }
 
-// Chame essa rota na página HomeCliente ao clicar no botão de editar
+// Essa rota é chamada na página HomeVendedor (/) ao clicar no botão de editar
 export async function PUT(req: Request, { params }: Params) {
     try {
         const { id } = await params;
@@ -44,7 +44,7 @@ export async function PUT(req: Request, { params }: Params) {
     }
 }
 
-// Chame essa rota na página HomeCliente ao clicar no botão de excluir
+// Essa rota é chamada na página HomeVendedor (/) ao clicar no botão de excluir
 export async function DELETE(req: Request, { params }: Params) {
     try {
         const { id } = await params;

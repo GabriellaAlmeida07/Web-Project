@@ -8,10 +8,10 @@ const controller = new ProdutoController();
 
 export async function POST(req: Request) {
     try {
-        // Em vez de ler JSON, agora lê FormData (para suportar o arquivo de imagem)
+        // Em vez de ler JSON, lê FormData (para suportar o arquivo de imagem)
         const formData = await req.formData();
         const file = formData.get("img") as File | null;
-        let imgUrl = ""; // Se a imagem for opcional, começa vazio
+        let imgUrl = ""; // Como a imagem é opcional, começa vazio
 
         // Se enviaram uma imagem, fazemos o upload no Cloudinary
         if (file && file.size > 0) {
@@ -22,9 +22,14 @@ export async function POST(req: Request) {
                 const uploadStream = cloudinary.uploader.upload_stream(
                     { folder: "produtos-devweb" },
                     (error, result) => {
-                        if (error) reject(error);
-                        else resolve(result);
-                    },
+                        if (error) {
+                            console.error("Cloudinary error", error);
+                            reject(error);
+                        } else {
+                            console.log("Upload ok:", result);
+                            resolve(result);
+                        }
+                    }
                 );
                 uploadStream.end(buffer);
             });

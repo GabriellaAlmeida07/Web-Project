@@ -75,7 +75,7 @@ export default function MsgsVendedor() {
                         </button>
                     </div>
 
-                    <div className="text-pretty text-lg font-medium my-4 mx-2 p-2 flex items-center justify-center rounded border-2 box-decoration-slice border-gray-400">
+                    <div className="text-pretty text-lg font-medium my-4 mx-0 p-2 flex items-center justify-center rounded border-2 box-decoration-slice border-gray-400">
                         {" "}
                         Chat com o cliente{" "}
                     </div>

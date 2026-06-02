@@ -6,6 +6,7 @@ import CardProdPedido from "./cardProdPedido";
 import { IoClose } from "react-icons/io5";
 import { FaSpinner } from "react-icons/fa";
 import { formatarData } from "@/utils/formatacao";
+import { toast } from "sonner";
 
 type Props = {
     pedido: PedidoProps;
@@ -14,7 +15,13 @@ type Props = {
 
 export default function CardPedido({ pedido, tipo }: Props) {
     const [loading, setLoading] = useState(false);
+    const [loadingEntregue, setLoadingEntregue] = useState(false);
+    const [loadingEdicao, setLoadingEdicao] = useState(false);
+    const [loadingExclusao, setLoadingExclusao] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [editando, setEditando] = useState(false);
+    const [novoEndereco, setNovoEndereco] = useState("");
+    const [showConfirmacao, setShowConfirmacao] = useState(false);
     const [produtosPedido, setProdutosPedido] = useState<
         Record<string, ProdutoProps>
     >({});
@@ -28,7 +35,6 @@ export default function CardPedido({ pedido, tipo }: Props) {
 
             for (const item of pedido.itens) {
                 const res = await fetch(`/api/produtos/${item.id_produto}`);
-
                 const produto = await res.json();
 
                 produtosObj[item.id_produto] = produto;
@@ -42,74 +48,86 @@ export default function CardPedido({ pedido, tipo }: Props) {
         carregarProdutosPedido();
     }, [isOpen, pedido.itens]);
 
-    // Cole esta função dentro do seu componente CardPedido
-    async function editarPedido() {
-        // 1. Abre uma caixinha no navegador perguntando o novo endereço
-        const novoEndereco = prompt(
-            "Digite o novo endereço de entrega para este pedido:",
-        );
+    function abrirEdicao() {
+        setNovoEndereco(pedido.endereco_entrega);
+        setEditando(true);
+    }
 
-        // Se o usuário clicar em cancelar ou deixar vazio, cancela a função
+    async function salvarEdicao() {
         if (!novoEndereco) return;
 
         try {
+            setLoadingEdicao(true);
             const response = await fetch(`/api/pedidos/${pedido.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    endereco_entrega: novoEndereco, // O seu PedidoController vai receber isso em 'dados'
+                    endereco_entrega: novoEndereco,
                 }),
             });
 
             if (response.ok) {
-                alert("Pedido atualizado com sucesso!");
-                window.location.reload(); // Atualiza a tela para mostrar o novo endereço no card
+                toast.success("Pedido atualizado com sucesso!");
+                setTimeout(() => {
+                    window.location.reload(); // Atualiza a tela para mostrar o novo endereço no card
+                }, 2000);
             } else {
-                alert("Erro ao editar o pedido.");
+                toast.error("Erro ao editar o pedido.");
             }
         } catch (error) {
             console.error("Erro na requisição:", error);
-            alert("Erro ao conectar com o servidor.");
+            toast.error("Erro ao conectar com o servidor.");
+        } finally {
+            setLoadingEdicao(false);
         }
     }
 
     async function marcarComoEntregue() {
         try {
+            setLoadingEntregue(true);
             const response = await fetch(`/api/pedidos/${pedido.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ entregue: true }), // Passa o dado pro seu controller receber
+                body: JSON.stringify({ entregue: true }),
             });
 
             if (response.ok) {
-                alert("Pedido marcado como entregue!");
-                window.location.reload();
+                toast.success("Pedido marcado como entregue!");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
             } else {
-                alert("Erro ao atualizar o pedido");
+                toast.error("Erro ao atualizar o pedido");
             }
         } catch (error) {
             console.error(error);
+        } finally {
+            setLoadingEntregue(false);
         }
     }
 
-    async function deletarPedido() {
-        if (confirm("Deseja mesmo excluir este pedido?")) {
-            try {
-                const response = await fetch(`/api/pedidos/${pedido.id}`, {
-                    method: "DELETE",
-                });
+    async function deletarPedidoConfirmado() {
+        try {
+            setLoadingExclusao(true);
+            const response = await fetch(`/api/pedidos/${pedido.id}`, {
+                method: "DELETE",
+            });
 
-                if (response.ok) {
-                    alert("Pedido excluído!");
+            if (response.ok) {
+                toast.info("Pedido excluído");
+                setShowConfirmacao(false);
+                setTimeout(() => {
                     window.location.reload();
-                } else {
-                    alert("Erro ao excluir o pedido");
-                }
-            } catch (error) {
-                console.error(error);
+                }, 2000);
+            } else {
+                toast.error("Erro ao excluir o pedido");
             }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoadingExclusao(false);
         }
     }
 
@@ -166,7 +184,7 @@ export default function CardPedido({ pedido, tipo }: Props) {
                             </span>{" "}
                             {pedido.itens.reduce(
                                 (total, item) => total + item.qtd,
-                                0,
+                                0
                             )}{" "}
                         </div>
                     )}
@@ -203,14 +221,14 @@ export default function CardPedido({ pedido, tipo }: Props) {
                         ) : (
                             <div className="flex mt-3 gap-2">
                                 <button
-                                    onClick={deletarPedido}
+                                    onClick={() => setShowConfirmacao(true)}
                                     className="w-full h-10 bg-red-400 hover:bg-red-500 transition rounded font-semibold text-white"
                                 >
                                     Cancelar
                                 </button>
 
                                 <button
-                                    onClick={editarPedido}
+                                    onClick={abrirEdicao}
                                     className="w-full h-10 bg-teal-600 hover:bg-teal-700 transition rounded font-semibold text-white"
                                 >
                                     Editar
@@ -222,9 +240,17 @@ export default function CardPedido({ pedido, tipo }: Props) {
                         (!pedido.entregue ? (
                             <button
                                 onClick={marcarComoEntregue}
-                                className="w-full mt-3 h-10 bg-teal-600 hover:bg-teal-700 transition rounded font-semibold text-white"
+                                disabled={loadingEntregue}
+                                className="w-full mt-3 h-10 bg-teal-600 flex flex-row items-center justify-center gap-2 hover:bg-teal-700 transition rounded font-semibold text-white"
                             >
-                                Marcar como entregue
+                                {loadingEntregue ? (
+                                    <>
+                                        <FaSpinner className="animate-spin" />
+                                        Marcando...
+                                    </>
+                                ) : (
+                                    "Marcar como entregue"
+                                )}
                             </button>
                         ) : (
                             <span className="block mt-3 w-full border border-gray-300 p-2 text-center font-semibold text-black rounded">
@@ -233,6 +259,48 @@ export default function CardPedido({ pedido, tipo }: Props) {
                         ))}
                 </div>
             </div>
+
+            {/* Edição do pedido */}
+            {editando && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[200]">
+                    <div className="bg-white w-full max-w-md rounded-xl p-5 shadow-xl">
+                        <h2 className="text-lg font-bold mb-3">
+                            Edite seu pedido
+                        </h2>
+
+                        <input
+                            className="w-full border p-2 rounded mb-4"
+                            value={novoEndereco}
+                            onChange={(e) => setNovoEndereco(e.target.value)}
+                            placeholder="Digite o novo endereço"
+                        />
+
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setEditando(false)}
+                                className="w-1/2 bg-gray-300 p-2 rounded"
+                            >
+                                Cancelar
+                            </button>
+
+                            <button
+                                onClick={salvarEdicao}
+                                disabled={loadingEdicao}
+                                className="w-1/2 bg-teal-600 flex flex-row items-center justify-center gap-2 text-white p-2 rounded"
+                            >
+                                {loadingEdicao ? (
+                                    <>
+                                        <FaSpinner className="animate-spin" />
+                                        Salvando...
+                                    </>
+                                ) : (
+                                    "Salvar"
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Modal de produtos */}
             {isOpen && (
@@ -263,7 +331,6 @@ export default function CardPedido({ pedido, tipo }: Props) {
                                     const p = produtosPedido[prod.id_produto];
 
                                     if (!p) return null;
-
                                     return (
                                         <CardProdPedido
                                             key={p.id}
@@ -275,6 +342,41 @@ export default function CardPedido({ pedido, tipo }: Props) {
                                         />
                                     );
                                 })}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Confirmação de exclusão */}
+            {showConfirmacao && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[200]">
+                    <div className="bg-white px-6 py-5 rounded-lg shadow-lg text-center max-w-sm w-full">
+                        <p className="text-lg font-semibold text-gray-800">
+                            Deseja mesmo excluir este pedido?
+                        </p>
+
+                        <div className="flex gap-3 mt-5">
+                            <button
+                                onClick={() => setShowConfirmacao(false)}
+                                className="w-1/2 bg-gray-300 py-2 rounded hover:bg-gray-400"
+                            >
+                                Não
+                            </button>
+
+                            <button
+                                onClick={deletarPedidoConfirmado}
+                                disabled={loadingExclusao}
+                                className="w-1/2 bg-red-500 flex flex-row items-center justify-center gap-2 text-white py-2 rounded hover:bg-red-600"
+                            >
+                                {loadingExclusao ? (
+                                    <>
+                                        <FaSpinner className="animate-spin" />
+                                        Excluindo...
+                                    </>
+                                ) : (
+                                    "Sim"
+                                )}
+                            </button>
                         </div>
                     </div>
                 </div>
