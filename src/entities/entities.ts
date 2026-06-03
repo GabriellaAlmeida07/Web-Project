@@ -46,39 +46,17 @@ export type PedidoProps = {
     Usuario?: UsuarioProps;
 };
 
-export interface Msg {
-    id: string;
-    assunto: string;
-    nome_cliente: string;
-    id_cliente: string;
-    data_registro: string;
+export type Msg = {
+    id?: number;
+    id_remetente: number;
+    tipo_remetente: "vendedor" | "cliente"; 
+    id_cliente: number;
+    data_envio: string;
     conteudo: string;
-    autor: "cliente" | "vendedor";
 }
 
 export type MsgProps = {
-    msg: Msg;
-    onResponder: (msg: Msg) => void;
+    loading?: boolean;
+    cliente: UsuarioProps;
+    onResponder: () => void;
 };
-
-// Msgs fake
-export const msgs_fake: Msg[] = [
-    {
-        id: "1",
-        assunto: "Dúvida sobre produto",
-        nome_cliente: "Maria",
-        id_cliente: "1",
-        data_registro: "14/04/2026",
-        conteudo: "Esse produto tem garantia?",
-        autor: "cliente",
-    },
-    {
-        id: "2",
-        assunto: "Entrega",
-        nome_cliente: "João",
-        id_cliente: "2",
-        data_registro: "13/04/2026",
-        conteudo: "Qual o prazo de entrega?",
-        autor: "cliente",
-    },
-];

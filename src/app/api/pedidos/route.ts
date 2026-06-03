@@ -50,7 +50,7 @@ export async function GET() {
 
         const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
 
-        const idCliente = decoded.sub as string;
+        const idCliente = decoded.sub;
         const tipo = decoded.tipo;
 
         let pedidos;
@@ -60,7 +60,7 @@ export async function GET() {
             pedidos = await controller.findAllPedidos();
         } else {
             // Cliente vê apenas os dele
-            pedidos = await controller.findPedidosCliente(idCliente);
+            pedidos = await controller.findPedidosCliente(Number(idCliente));
         }
 
         return Response.json(pedidos);

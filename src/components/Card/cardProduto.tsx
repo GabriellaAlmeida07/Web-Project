@@ -48,6 +48,8 @@ export default function CardProduto({
                 method: "DELETE",
             });
 
+            const data = await response.json();
+
             if (response.ok) {
                 toast.info("Produto excluído!");
                 setTimeout(() => {
@@ -55,7 +57,7 @@ export default function CardProduto({
                     window.location.reload();
                 }, 2000);
             } else {
-                toast.error("Erro ao excluir produto");
+                toast.error(data.error);
             }
         } catch (error) {
             console.error("Erro na requisição:", error);

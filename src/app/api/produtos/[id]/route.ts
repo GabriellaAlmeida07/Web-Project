@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 const controller = new ProdutoController();
 
 type Params = {
-    params: Promise<{ id: string }>;
+    params: Promise<{ id: number }>;
 };
 
 // Pega produto por id
@@ -25,7 +25,7 @@ export async function GET(req: Request, { params }: Params) {
             },
             {
                 status: 500,
-            },
+            }
         );
     }
 }
@@ -53,6 +53,14 @@ export async function DELETE(req: Request, { params }: Params) {
 
         return Response.json(resultado, { status: 200 });
     } catch (error) {
-        return Response.json({ error: String(error) }, { status: 500 });
+        return Response.json(
+            {
+                error:
+                    error instanceof Error
+                        ? error.message
+                        : "Erro interno do servidor",
+            },
+            { status: 400 }
+        );
     }
 }

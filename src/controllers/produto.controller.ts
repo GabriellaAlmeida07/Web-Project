@@ -1,3 +1,4 @@
+import { ItemPedido } from "@/models/pedido.model";
 import Produto from "@/models/produto.model";
 
 export class ProdutoController {
@@ -18,11 +19,11 @@ export class ProdutoController {
         return await Produto.findAll();
     }
 
-    async findById(id: string) {
+    async findById(id: number) {
         return await Produto.findByPk(id);
     }
 
-    async update(id: string, dados: any) {
+    async update(id: number, dados: any) {
         const [linhasAfetadas] = await Produto.update(dados, {
             where: { id: Number(id) },
         });
@@ -36,7 +37,20 @@ export class ProdutoController {
         return { message: "Produto atualizado com sucesso!" };
     }
 
-    async delete(id: string) {
+    async delete(id: number) {
+        // Verifica se há algum pedido que possui aquele item/produto
+        const existePedido = await ItemPedido.findOne({
+            where: {
+                id_produto: Number(id),
+            },
+        });
+        
+        if (existePedido) {
+            throw new Error(
+                "Não é possível excluir um produto que possui pedidos."
+            );
+        }
+
         const linhasDeletadas = await Produto.destroy({
             where: { id: Number(id) },
         });

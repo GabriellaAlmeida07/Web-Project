@@ -95,7 +95,7 @@ export class PedidoController {
     }
 
     // Usado na página PedidosCliente
-    async findPedidosCliente(id: string) {
+    async findPedidosCliente(id: number) {
         const pedidos = await Pedido.findAll({
             where: {
                 id_cliente: id,
@@ -128,7 +128,7 @@ export class PedidoController {
         }));
     }
 
-    async update(id: string, dados: any) {
+    async update(id: number, dados: any) {
         const [linhasAfetadas] = await Pedido.update(dados, {
             where: { id: Number(id) },
         });
@@ -136,7 +136,7 @@ export class PedidoController {
         return { message: "Pedido atualizado com sucesso!" };
     }
 
-    async delete(id: string) {
+    async delete(id: number) {
         const t = await sequelize.transaction();
     
         try {

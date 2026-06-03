@@ -4,7 +4,7 @@ export const runtime = "nodejs";
 const controller = new PedidoController();
 
 type Params = {
-    params: Promise<{ id: string }>;
+    params: Promise<{ id: number }>;
 };
 
 // Editar pedido ou marcar como entregue - PUT

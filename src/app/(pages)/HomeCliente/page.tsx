@@ -5,10 +5,10 @@ import Image from "next/image";
 import logo from "@/assets/logo.png";
 import carrinho from "@/assets/carrinho.png";
 import { IoIosChatboxes } from "react-icons/io";
-import { PedidoProps, ProdutoProps } from "@/entities/entities";
+import { Msg, PedidoProps, ProdutoProps } from "@/entities/entities";
 import { useEffect, useRef, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
-import { formatarTotal } from "@/utils/formatacao";
+import { formatarData, formatarTotal } from "@/utils/formatacao";
 import { BsEmojiNeutral } from "react-icons/bs";
 import { GrSend } from "react-icons/gr";
 import CardProduto from "@/components/Card/cardProduto";
@@ -28,6 +28,10 @@ export default function HomeCliente() {
     const caixaRefChat = useRef<HTMLDivElement>(null);
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
     const [prosseguir, setProsseguir] = useState(false);
+    const [msgAtual, setMsgAtual] = useState<string>("");
+    const [msgs, setMsgs] = useState<Msg[]>([]);
+    const [loadingMsg, setLoadingMsg] = useState<boolean>(false);
+    const [sendingMsg, setSendingMsg] = useState<boolean>(false);
     const [digitando, setDigitando] = useState<Record<string, string | null>>(
         {}
     );
@@ -138,25 +142,6 @@ export default function HomeCliente() {
         };
     }, [isOpen]);
 
-    // Quando clicar fora do chat ele irá fechar
-    useEffect(() => {
-        if (!isOpenChat) return;
-
-        function handleCliqueFora(event: MouseEvent) {
-            if (
-                caixaRefChat.current &&
-                !caixaRefChat.current.contains(event.target as Node)
-            ) {
-                setIsOpenChat(false);
-            }
-        }
-
-        document.addEventListener("mousedown", handleCliqueFora);
-        return () => {
-            document.removeEventListener("mousedown", handleCliqueFora);
-        };
-    }, [isOpenChat]);
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -206,6 +191,76 @@ export default function HomeCliente() {
             router.push("/Login");
         } catch (error) {
             console.error("Erro ao deslogar:", error);
+        }
+    }
+
+    // Mensagens
+    useEffect(() => {
+        // Quando clicar fora do chat ele irá fechar
+        if (!isOpenChat) return;
+
+        function handleCliqueFora(event: MouseEvent) {
+            if (
+                caixaRefChat.current &&
+                !caixaRefChat.current.contains(event.target as Node)
+            ) {
+                setIsOpenChat(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleCliqueFora);
+        return () => {
+            document.removeEventListener("mousedown", handleCliqueFora);
+        };
+    }, [isOpenChat]);
+
+    useEffect(() => {
+        if (!isOpenChat || msgs.length > 0) return;
+
+        async function carregarMsgs() {
+            try {
+                setLoadingMsg(true);
+                const response = await fetch("/api/mensagens/cliente");
+
+                const mensagens: Msg[] = await response.json();
+
+                setMsgs(mensagens);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoadingMsg(false);
+            }
+        }
+
+        carregarMsgs();
+    }, [isOpenChat]);
+
+    async function enviarMsg() {
+        // Remove espaços no início e fim da msg
+        if (!msgAtual.trim()) return;
+
+        try {
+            setSendingMsg(true);
+
+            const res = await fetch("/api/mensagens", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    conteudo: msgAtual,
+                    tipo_remetente: "cliente",
+                }),
+            });
+
+            const novaMsg: Msg = await res.json();
+
+            setMsgAtual("");
+            setMsgs((msgs) => [...msgs, novaMsg]);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setSendingMsg(false);
         }
     }
 
@@ -568,7 +623,11 @@ export default function HomeCliente() {
                                     <div className="bg-gray-100 rounded-lg p-4 mb-6">
                                         <p className="font-semibold text-base">
                                             Quantidade de itens:{" "}
-                                            {pedido.itens.reduce((total, item) => total + item.qtd, 0)}
+                                            {pedido.itens.reduce(
+                                                (total, item) =>
+                                                    total + item.qtd,
+                                                0
+                                            )}
                                         </p>
 
                                         <p className="font-semibold text-base mt-2">
@@ -622,20 +681,55 @@ export default function HomeCliente() {
                     </div>
 
                     {/* Área de mensagens */}
-                    <div className="flex-1 overflow-y-auto p-4">
-                        <p className="text-gray-500 text-center">
-                            Nenhuma mensagem ainda...
-                        </p>
-                    </div>
+                    <div className="flex-1 overflow-y-auto p-4 space-y-2">
+                        {loadingMsg ? (
+                            <div className="flex items-center justify-center">
+                                <FaSpinner className="animate-spin text-gray-600 text-4xl" />
+                            </div>
+                        ) : msgs.length === 0 ? (
+                            <p className="text-gray-500 text-center">
+                                Nenhuma mensagem ainda...
+                            </p>
+                        ) : (
+                            msgs.map((m) => (
+                                <div
+                                    key={m.id}
+                                    className={`p-2 rounded max-w-[70%] ${
+                                        m.tipo_remetente === "cliente"
+                                            ? "bg-teal-400 text-white ml-auto"
+                                            : "bg-gray-200"
+                                    }`}
+                                >
+                                    <p>{m.conteudo}</p>
 
+                                    <div
+                                        className={`text-xs mt-2 text-right ${
+                                            m.tipo_remetente === "cliente"
+                                                ? "text-teal-100"
+                                                : "text-gray-500"
+                                        }`}
+                                    >
+                                        {formatarData(m.data_envio)}
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                    
                     {/* Footer */}
                     <div className="px-3 py-6 border-t flex items-center gap-2">
                         <textarea
                             placeholder="Digite sua mensagem..."
+                            value={msgAtual}
+                            onChange={(e) => setMsgAtual(e.target.value)}
                             className="flex-1 h-20 border rounded px-3 py-2 outline-none resize-none"
                         />
 
-                        <button className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded">
+                        <button
+                            onClick={enviarMsg}
+                            disabled={sendingMsg}
+                            className="bg-teal-600 hover:bg-teal-700 disabled:bg-gray-600 text-white px-4 py-2 rounded"
+                        >
                             <GrSend size={22} />
                         </button>
                     </div>
