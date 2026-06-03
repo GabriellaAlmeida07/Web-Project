@@ -176,7 +176,7 @@ export default function MsgsVendedor() {
                                     className={`p-2 rounded max-w-[70%] ${
                                         m.tipo_remetente === "cliente"
                                             ? "bg-gray-200"
-                                            : "bg-teal-400 text-white ml-auto"
+                                            : "bg-teal-600 text-white ml-auto"
                                     }`}
                                 >
                                     <p>{m.conteudo}</p>

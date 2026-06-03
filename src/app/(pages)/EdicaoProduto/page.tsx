@@ -112,14 +112,15 @@ export default function EdicaoProduto() {
                 method: "DELETE",
             });
 
+            const data = await response.json();
+
             if (response.ok) {
                 toast.info("Produto excluído com sucesso!");
                 router.push("/");
             } else {
-                toast.error("Erro ao excluir o produto.");
+                toast.error(data.error);
             }
         } catch (error) {
-            console.error("Erro na requisição DELETE:", error);
             toast.error("Erro ao conectar com o servidor.");
         } finally {
             setLoadingExclusao(false);

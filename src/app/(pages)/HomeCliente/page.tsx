@@ -696,7 +696,7 @@ export default function HomeCliente() {
                                     key={m.id}
                                     className={`p-2 rounded max-w-[70%] ${
                                         m.tipo_remetente === "cliente"
-                                            ? "bg-teal-400 text-white ml-auto"
+                                            ? "bg-teal-600 text-white ml-auto"
                                             : "bg-gray-200"
                                     }`}
                                 >

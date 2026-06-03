@@ -3,10 +3,11 @@
 import { PedidoProps, ProdutoProps } from "@/entities/entities";
 import { useEffect, useState } from "react";
 import CardProdPedido from "./cardProdPedido";
-import { IoClose } from "react-icons/io5";
+import { IoArrowBackOutline, IoClose, IoLocationSharp } from "react-icons/io5";
 import { FaSpinner } from "react-icons/fa";
-import { formatarData } from "@/utils/formatacao";
+import { formatarData, formatarTotal } from "@/utils/formatacao";
 import { toast } from "sonner";
+import { IoMdAdd } from "react-icons/io";
 
 type Props = {
     pedido: PedidoProps;
@@ -16,18 +17,31 @@ type Props = {
 export default function CardPedido({ pedido, tipo }: Props) {
     const [loading, setLoading] = useState(false);
     const [loadingEntregue, setLoadingEntregue] = useState(false);
-    const [loadingEdicao, setLoadingEdicao] = useState(false);
+    const [loadingEscolha, setLoadingEscolha] = useState(false);
     const [loadingExclusao, setLoadingExclusao] = useState(false);
+    const [loadingEdicao, setLoadingEdicao] = useState(false);
+    const [escolherProduto, setEscolherProduto] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [editando, setEditando] = useState(false);
-    const [novoEndereco, setNovoEndereco] = useState("");
+    const [pedidoEditando, setPedidoEditando] = useState<PedidoProps | null>(
+        null
+    );
+    const [editandoEndereco, setEditandoEndereco] = useState(false);
+    const [novoEndereco, setNovoEndereco] = useState<string | null>(null);
     const [showConfirmacao, setShowConfirmacao] = useState(false);
+    const [allProdutos, setAllProdutos] = useState<ProdutoProps[]>([]);
     const [produtosPedido, setProdutosPedido] = useState<
         Record<string, ProdutoProps>
     >({});
 
     useEffect(() => {
-        if (!isOpen) return;
+        if (!isOpen && !editando) return;
+
+        const jaCarregado = pedido.itens.every(
+            (item) => produtosPedido[item.id_produto]
+        );
+
+        if (jaCarregado) return;
 
         async function carregarProdutosPedido() {
             const produtosObj: Record<string, ProdutoProps> = {};
@@ -41,20 +55,129 @@ export default function CardPedido({ pedido, tipo }: Props) {
             }
 
             setProdutosPedido(produtosObj);
-            console.log(produtosObj);
             setLoading(false);
         }
 
         carregarProdutosPedido();
-    }, [isOpen, pedido.itens]);
+    }, [isOpen, editando, pedido.itens]);
 
-    function abrirEdicao() {
-        setNovoEndereco(pedido.endereco_entrega);
+    // Carregar todos os produtos quando deseja-se incluir novo produto no pedido em edição
+    useEffect(() => {
+        async function carregarProdutos() {
+            if (allProdutos.length > 0) return;
+
+            try {
+                setLoadingEscolha(true);
+                const res = await fetch("/api/produtos", { method: "GET" });
+
+                const data = await res.json();
+
+                setAllProdutos(data);
+            } catch (error) {
+                console.error("Erro ao carregar produtos:", error);
+            } finally {
+                setLoadingEscolha(false);
+            }
+        }
+
+        carregarProdutos();
+    }, [escolherProduto]);
+
+    async function abrirEdicao() {
+        setPedidoEditando(structuredClone(pedido));
         setEditando(true);
     }
 
+    function atualizarQuantidade(
+        idProd: number,
+        novaQtd: number,
+        qtd_estoque: number,
+        preco: number
+    ) {
+        // Previne erros de conversão
+        novaQtd = Number(novaQtd);
+        preco = Number(preco);
+
+        if (novaQtd > qtd_estoque) {
+            toast.warning("Estoque insuficiente");
+            return;
+        }
+
+        if (!pedidoEditando) return;
+
+        const pedidoAtual: PedidoProps = structuredClone(pedidoEditando);
+
+        // Encontra o produto associado correto
+        const index = pedidoAtual.itens.findIndex(
+            (p) => p.id_produto === idProd
+        );
+
+        // Se ainda não existir produtos no pedido, o novo produto estará no idx 0
+        const qtdAnterior = Number(
+            index !== -1 ? pedidoAtual.itens[index].qtd : 0
+        );
+        const delta = novaQtd - qtdAnterior;
+
+        if (novaQtd <= 0) {
+            // Remoção do produto associado no vetor de itens do localStorage
+            if (index !== -1) pedidoAtual.itens.splice(index, 1);
+        } else {
+            // Atualização de produto já existente
+            if (index !== -1) {
+                pedidoAtual.itens[index].qtd = novaQtd;
+            } else {
+                // Criação do novo produto
+                pedidoAtual.itens.push({
+                    id_produto: idProd,
+                    qtd: novaQtd,
+                    preco_unitario: preco,
+                });
+            }
+        }
+
+        // Atualização do total
+        pedidoAtual.valor_total = formatarTotal(
+            pedidoAtual.valor_total + delta * preco
+        );
+
+        setPedidoEditando({ ...pedidoAtual });
+    }
+
+    function adicionarProdEscolhido(p: ProdutoProps) {
+        if (!pedidoEditando) return;
+
+        const jaExiste = pedidoEditando.itens.some(
+            (item) => item.id_produto === p.id
+        );
+
+        if (jaExiste) {
+            toast.warning("Esse produto já está no seu pedido");
+            return;
+        }
+
+        const novoPedido = structuredClone(pedidoEditando);
+
+        novoPedido.itens.push({
+            id_produto: p.id!,
+            qtd: 1,
+            preco_unitario: p.preco,
+        });
+
+        novoPedido.valor_total += p.preco;
+
+        setProdutosPedido((prev) => ({
+            ...prev,
+            [p.id!]: p,
+        }));
+
+        setPedidoEditando(novoPedido);
+        setEscolherProduto(false);
+
+        toast.success("Produto adicionado ao pedido");
+    }
+
     async function salvarEdicao() {
-        if (!novoEndereco) return;
+        if (!pedidoEditando && !novoEndereco) return;
 
         try {
             setLoadingEdicao(true);
@@ -64,14 +187,19 @@ export default function CardPedido({ pedido, tipo }: Props) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    endereco_entrega: novoEndereco,
+                    pedidoOrig: pedido,
+                    novoPedido: pedidoEditando,
+                    endereco_entrega: novoEndereco
+                        ? novoEndereco
+                        : pedido.endereco_entrega,
+                    entregue: false,
                 }),
             });
 
             if (response.ok) {
                 toast.success("Pedido atualizado com sucesso!");
                 setTimeout(() => {
-                    window.location.reload(); // Atualiza a tela para mostrar o novo endereço no card
+                    window.location.reload();
                 }, 2000);
             } else {
                 toast.error("Erro ao editar o pedido.");
@@ -82,6 +210,11 @@ export default function CardPedido({ pedido, tipo }: Props) {
         } finally {
             setLoadingEdicao(false);
         }
+    }
+
+    function abrirEdicaoEndereco() {
+        setNovoEndereco(pedido.endereco_entrega);
+        setEditandoEndereco(true);
     }
 
     async function marcarComoEntregue() {
@@ -108,7 +241,7 @@ export default function CardPedido({ pedido, tipo }: Props) {
         }
     }
 
-    async function deletarPedidoConfirmado() {
+    async function deletarPedido() {
         try {
             setLoadingExclusao(true);
             const response = await fetch(`/api/pedidos/${pedido.id}`, {
@@ -262,40 +395,280 @@ export default function CardPedido({ pedido, tipo }: Props) {
 
             {/* Edição do pedido */}
             {editando && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[200]">
+                <div className="fixed flex flex-col top-1/2 left-1/2 overflow-hidden -translate-x-1/2 -translate-y-1/2 bg-white h-11/12 md:h-4/5 w-[92%] max-w-[800px] z-[900] shadow-2xl">
+                    {" "}
+                    {/* Fechar exibição de edição */}
+                    <div className="w-full flex flex-row gap-2 justify-between bg-white p-2 shrink-0">
+                        <button
+                            onClick={() => {
+                                setEditando(false);
+                            }}
+                            className="w-24 h-10 text-base disabled:opacity-50 flex items-center justify-center gap-2 font-semibold bg-[#F08FAF] text-white rounded"
+                        >
+                            <IoArrowBackOutline size={20} />
+                            Voltar
+                        </button>
+                        <button
+                            onClick={() => setEscolherProduto(true)}
+                            className="w-36 h-10 flex items-center justify-center gap-1 font-semibold bg-slate-400 text-sm text-white rounded"
+                        >
+                            <IoMdAdd size={15} />
+                            Adicionar produto
+                        </button>
+                        <button
+                            onClick={abrirEdicaoEndereco}
+                            className="w-36 h-10 flex items-center justify-center gap-0 md:gap-1 font-semibold bg-teal-600 text-sm text-white rounded"
+                        >
+                            <IoLocationSharp size={15} />
+                            Editar Endereço
+                        </button>
+                    </div>
+                    <div className="text-pretty text-base my-2 mx-0 font-medium p-2 flex items-center justify-center rounded border-2 box-decoration-slice border-gray-400 shrink-0">
+                        Editar Pedido
+                    </div>
+                    {loading ? (
+                        <div className="flex items-center justify-center mt-10 shrink-0">
+                            <FaSpinner className="animate-spin text-4xl" />
+                        </div>
+                    ) : (
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                salvarEdicao();
+                            }}
+                            className="flex flex-col flex-1 overflow-hidden"
+                        >
+                            {/* Cabeçalho */}
+                            <div className="grid grid-cols-[96px_1fr_minmax(96px,auto)_minmax(96px,auto)] md:grid-cols-[144px_1fr_minmax(128px,auto)_minmax(128px,auto)] font-medium mt-3 border-b-2 pb-2 border-dashed border-teal-500 items-center shrink-0">
+                                <div className="text-center">Qtd</div>
+                                <div className="text-center">Produto</div>
+                                <div className="text-center">Preço</div>
+                                <div className="text-center">Subtotal</div>
+                            </div>
+
+                            {/* Lista de produtos */}
+                            <div className="flex-1 overflow-y-auto overflow-x-hidden">
+                                {pedidoEditando?.itens.map((prod, index) => {
+                                    const produto =
+                                        produtosPedido[prod.id_produto];
+
+                                    if (!produto) return null;
+
+                                    return (
+                                        <div
+                                            key={`${prod.id_produto}-${index}`}
+                                            className="flex flex-col mt-2 border-b-2 pb-2 border-dashed border-teal-500"
+                                        >
+                                            <div className="flex justify-end mb-2 mr-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        atualizarQuantidade(
+                                                            prod.id_produto,
+                                                            0,
+                                                            produto.qtd_estoque,
+                                                            produto.preco
+                                                        );
+
+                                                        toast.warning(
+                                                            "Produto removido do seu pedido"
+                                                        );
+                                                    }}
+                                                    className="text-red-600 font-medium text-sm"
+                                                >
+                                                    Devolver produto ao estoque
+                                                </button>
+                                            </div>
+
+                                            <div className="grid grid-cols-[96px_1fr_96px_96px] md:grid-cols-[144px_1fr_128px_128px] items-center">
+                                                {/* Quantidade */}
+                                                <div className="flex justify-center">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            atualizarQuantidade(
+                                                                prod.id_produto,
+                                                                prod.qtd - 1,
+                                                                produto.qtd_estoque,
+                                                                produto.preco
+                                                            )
+                                                        }
+                                                        className="w-7 h-7 flex items-center justify-center border-2 border-[#F08FAF] rounded"
+                                                    >
+                                                        −
+                                                    </button>
+
+                                                    <input
+                                                        type="text"
+                                                        min={0}
+                                                        value={prod.qtd}
+                                                        onChange={(e) =>
+                                                            atualizarQuantidade(
+                                                                prod.id_produto,
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                ),
+                                                                produto.qtd_estoque,
+                                                                produto.preco
+                                                            )
+                                                        }
+                                                        className="w-12 text-center"
+                                                    />
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            atualizarQuantidade(
+                                                                prod.id_produto,
+                                                                prod.qtd + 1,
+                                                                produto.qtd_estoque,
+                                                                produto.preco
+                                                            )
+                                                        }
+                                                        className="w-7 h-7 flex items-center justify-center border-2 border-[#F08FAF] rounded"
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+
+                                                {/* Produto */}
+                                                <div className="text-center px-1">
+                                                    {produto.nome}
+                                                </div>
+
+                                                {/* Preço */}
+                                                <div className="text-center">
+                                                    R${" "}
+                                                    {produto.preco.toFixed(2)}
+                                                </div>
+
+                                                {/* Subtotal */}
+                                                <div className="text-center">
+                                                    R${" "}
+                                                    {(
+                                                        produto.preco * prod.qtd
+                                                    ).toFixed(2)}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Footer fixado no final da área branca */}
+                            <div className="bg-white shadow-2xl p-4 shrink-0 mt-auto">
+                                <p className="font-bold">
+                                    Total: R${" "}
+                                    {pedidoEditando?.valor_total.toFixed(2)}
+                                </p>
+
+                                <div className="flex gap-3 mt-2 font-semibold justify-center">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setPedidoEditando(null);
+                                            setEditando(false);
+                                        }}
+                                        className="w-1/2 h-10 bg-red-400 text-white rounded"
+                                    >
+                                        Cancelar
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        className="w-1/2 h-11 bg-teal-600 hover:bg-teal-700 text-white rounded font-semibold flex items-center justify-center gap-2"
+                                    >
+                                        {loadingEdicao ? (
+                                            <>
+                                                <FaSpinner className="animate-spin" />
+                                                Editando...
+                                            </>
+                                        ) : (
+                                            "Editar"
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    )}
+                </div>
+            )}
+
+            {/* Escolha de produtos */}
+            {escolherProduto && (
+                <div className="fixed flex flex-col top-1/2 left-1/2 overflow-hidden -translate-x-1/2 -translate-y-1/2 bg-white h-4/5 w-[92%] max-w-[800px] p-3 z-[1000] shadow-2xl">
+                    <button
+                        onClick={() => setEscolherProduto(false)}
+                        className="w-24 h-10 flex items-center justify-center gap-2 font-semibold bg-[#F08FAF] text-white rounded"
+                    >
+                        <IoArrowBackOutline size={20} />
+                        Voltar
+                    </button>
+
+                    <div className="flex justify-center text-base font-medium mt-6">
+                        Clique no produto que deseja adicionar
+                    </div>
+
+                    {loadingEscolha ? (
+                        <div className="flex items-center justify-center mt-10 shrink-0">
+                            <FaSpinner className="animate-spin text-4xl" />
+                        </div>
+                    ) : (
+                        <ul className="mt-4 overflow-y-auto">
+                            {allProdutos.map((p) => (
+                                <li
+                                    key={p.id}
+                                    onClick={() => adicionarProdEscolhido(p)}
+                                    className="p-3 border-b cursor-pointer hover:bg-gray-100"
+                                >
+                                    <div className="font-medium">{p.nome}</div>
+
+                                    <div className="text-sm text-gray-500">
+                                        R$ {p.preco.toFixed(2)}
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            )}
+
+            {/* Edição do endereço de entrega do pedido */}
+            {editandoEndereco && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]">
                     <div className="bg-white w-full max-w-md rounded-xl p-5 shadow-xl">
                         <h2 className="text-lg font-bold mb-3">
-                            Edite seu pedido
+                            Edite o endereço
                         </h2>
-
+                        <p className="my-3">
+                            {" "}
+                            Será necessário clicar em <strong>Editar</strong>,
+                            na tela anterior, para salvar a alteração{" "}
+                        </p>
                         <input
                             className="w-full border p-2 rounded mb-4"
-                            value={novoEndereco}
+                            value={novoEndereco ?? ""}
                             onChange={(e) => setNovoEndereco(e.target.value)}
                             placeholder="Digite o novo endereço"
                         />
 
                         <div className="flex gap-2">
                             <button
-                                onClick={() => setEditando(false)}
+                                onClick={() => {
+                                    setEditandoEndereco(false),
+                                        setNovoEndereco("");
+                                }}
                                 className="w-1/2 bg-gray-300 p-2 rounded"
                             >
                                 Cancelar
                             </button>
 
                             <button
-                                onClick={salvarEdicao}
-                                disabled={loadingEdicao}
+                                onClick={() => setEditandoEndereco(false)}
                                 className="w-1/2 bg-teal-600 flex flex-row items-center justify-center gap-2 text-white p-2 rounded"
                             >
-                                {loadingEdicao ? (
-                                    <>
-                                        <FaSpinner className="animate-spin" />
-                                        Salvando...
-                                    </>
-                                ) : (
-                                    "Salvar"
-                                )}
+                                Confirmar
                             </button>
                         </div>
                     </div>
@@ -364,7 +737,7 @@ export default function CardPedido({ pedido, tipo }: Props) {
                             </button>
 
                             <button
-                                onClick={deletarPedidoConfirmado}
+                                onClick={deletarPedido}
                                 disabled={loadingExclusao}
                                 className="w-1/2 bg-red-500 flex flex-row items-center justify-center gap-2 text-white py-2 rounded hover:bg-red-600"
                             >
