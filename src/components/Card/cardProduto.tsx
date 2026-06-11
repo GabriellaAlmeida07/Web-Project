@@ -3,7 +3,7 @@
 import { Props } from "@/entities/entities";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaPen, FaRegStar, FaSpinner, FaStar, FaTrash } from "react-icons/fa";
 import { toast } from "sonner";
 
@@ -23,7 +23,29 @@ export default function CardProduto({
     const [digitando, setDigitando] = useState<string | null>(null);
     const [loadingExclusao, setLoadingExclusao] = useState(false);
     const [showConfirmacao, setShowConfirmacao] = useState(false);
+    
+    // Guarda a média de estrelas deste produto específico
+    const [mediaAvaliacao, setMediaAvaliacao] = useState<number>(0);
+    const [totalAvaliacoes, setTotalAvaliacoes] = useState<number>(0);
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Assim que o card aparece na tela, ele vai no banco perguntar a média
+    useEffect(() => {
+        async function buscarMedia() {
+            if (!id) return;
+            try {
+                const res = await fetch(`/api/avaliacoes/${id}`);
+                const data = await res.json();
+                if (data.media !== undefined) {
+                    setMediaAvaliacao(data.media);
+                    setTotalAvaliacoes(data.total);
+                }
+            } catch (error) {
+                console.error("Erro ao carregar média do produto:", error);
+            }
+        }
+        buscarMedia();
+    }, [id]);
 
     function diminuir() {
         if (quantidade > 0) {
@@ -53,7 +75,6 @@ export default function CardProduto({
             if (response.ok) {
                 toast.info("Produto excluído!");
                 setTimeout(() => {
-                    // Espera 2s antes de recarregar
                     window.location.reload();
                 }, 2000);
             } else {
@@ -114,15 +135,18 @@ export default function CardProduto({
                         Qtd: <span className="font-bold">{qtd_estoque} </span>{" "}
                     </div>
 
-                    {/* Avaliação */}
+                    {/* Avaliação com as estrelinhas amarelas */}
                     <div className="flex items-center gap-1">
                         {[...Array(5)].map((_, i) =>
-                            avaliacao && avaliacao > i ? (
-                                <FaStar key={i} />
+                            mediaAvaliacao > i ? (
+                                <FaStar key={i} color="#FFD700" size={18} />
                             ) : (
-                                <FaRegStar key={i} />
+                                <FaRegStar key={i} color="#e4e5e9" size={18} />
                             )
                         )}
+                        <span className="text-sm font-semibold text-gray-500 ml-1">
+                            ({totalAvaliacoes})
+                        </span>
                     </div>
 
                     {/* Parte inferior dependente de ser cliente ou vendedor */}

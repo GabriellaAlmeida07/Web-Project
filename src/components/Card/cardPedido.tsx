@@ -712,6 +712,9 @@ export default function CardPedido({ pedido, tipo }: Props) {
                                             tipo={tipo}
                                             preco={prod.preco_unitario}
                                             onChangeQtd={() => {}}
+                                            // O botão de avaliar só fica visível se o pedido já foi entregue
+                                            exibirAvaliacao={pedido.entregue}
+                                            idClientePedido={pedido.id_cliente || pedido.Usuario?.id}
                                         />
                                     );
                                 })}
