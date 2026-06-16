@@ -439,7 +439,7 @@ export default function CardPedido({ pedido, tipo }: Props) {
                             className="flex flex-col flex-1 overflow-hidden"
                         >
                             {/* Cabeçalho */}
-                            <div className="grid grid-cols-[96px_1fr_minmax(96px,auto)_minmax(96px,auto)] md:grid-cols-[144px_1fr_minmax(128px,auto)_minmax(128px,auto)] font-medium mt-3 border-b-2 pb-2 border-dashed border-teal-500 items-center shrink-0">
+                            <div className="grid grid-cols-[96px_1fr_minmax(96px,auto)_minmax(96px,auto)] md:grid-cols-[144px_1fr_minmax(128px,auto)_minmax(128px,auto)] font-medium mt-3 border-b-2 pb-2 border-dashed border-teal-600 items-center shrink-0">
                                 <div className="text-center">Qtd</div>
                                 <div className="text-center">Produto</div>
                                 <div className="text-center">Preço</div>
@@ -457,7 +457,7 @@ export default function CardPedido({ pedido, tipo }: Props) {
                                     return (
                                         <div
                                             key={`${prod.id_produto}-${index}`}
-                                            className="flex flex-col mt-2 border-b-2 pb-2 border-dashed border-teal-500"
+                                            className="flex flex-col mt-2 border-b-2 pb-2 border-dashed border-teal-600"
                                         >
                                             <div className="flex justify-end mb-2 mr-2">
                                                 <button

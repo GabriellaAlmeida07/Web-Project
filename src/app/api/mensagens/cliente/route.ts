@@ -1,13 +1,11 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { MensagemController } from "@/controllers/mensagem.controller";
-import { initDb } from "@/models/alteracoes";
 
 const secret = process.env.AUTH_SECRET as string;
 const controller = new MensagemController();
 
 export async function GET() {
-    await initDb();
     try {
         // Pega cookie
         const cookieStore = await cookies();
