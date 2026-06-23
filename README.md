@@ -1,6 +1,6 @@
 # Como executar o projeto
 
-### Siga os passos abaixo para rodar a aplicação localmente:
+Siga os passos abaixo para executar a aplicação localmente:
 
 ```bash
 npm install
@@ -9,47 +9,103 @@ npm run dev
 
 Após iniciar, o projeto estará disponível em:
 
+```
 http://localhost:3000
+```
 
-# Guia de Navegação e Uso 
+# Guia de Navegação e Uso
 
-Ao rodar o projeto localmente (`localhost:3000`), você será direcionado automaticamente para a rota padrão: **Painel do Vendedor**.
+## Autenticação
 
-## Área do Vendedor
-No Painel do Vendedor, você encontrará um **Header** fixo que permite navegar para as páginas:
+Ao iniciar a aplicação, será exibida a tela de **Login**.
 
-* **Adicionar Novo Produto:** Clique no botão `Adicionar Produto` localizado no header.
-* **Mensagens Recebidas:** Clique no botão `Ver Mensagens` no header para visualizar o chat com os clientes.
-* **Pedidos Recebidos:** Clique no botão `Pedidos Recebidos` no header para visualizar as vendas realizadas.
+Você pode testar a funcionalidade de cadastro clicando em **Cadastre-se** ou utilizar um dos usuários de teste abaixo:
 
-Para visualizar a página de edição de produto:
-* **Editar Produto Existente:** Localize o produto que deseja editar e clique no botão com o **ícone de Lápis** (✎). Isso abrirá a página de edição preenchida.
-
-## Autenticação (Acesso Manual)
-Como o sistema está em fase de implementação, utilize as rotas abaixo ou o botão de saída:
-* **Login:** Acesse `localhost:3000/Login` ou clique em `Logout` no header.
-* **Cadastro:** Acesse `localhost:3000/Cadastro`.
+| Tipo de usuário | E-mail               | Senha  |
+| --------------- | -------------------- | ------ |
+| Cliente         | `cliente@gmail.com`  | `1234` |
+| Vendedor        | `vendedor@gmail.com` | `1234` |
 
 ---
 
-## Área do Cliente
-Visto que a autenticação ainda não está integrada, o acesso à visão do cliente deve ser feito manualmente via URL:
+# Área do Cliente
 
-* **Página Inicial do Cliente:** Acesse `localhost:3000/HomeCliente`.
+Ao entrar como **Cliente**, você terá acesso às seguintes funcionalidades:
 
-### Funcionalidades Disponíveis na HomeCliente:
-* **Vitrine:** Visualização de todos os produtos disponíveis para compra.
-* **Carrinho:** Adição de itens e finalização do pedido.
-* **Chat:** Comunicação direta com o vendedor, clique no `ícone de chat` localizado no header da área do cliente.
-* **Meus Pedidos:** Para visualizar seu histórico de compras, clique no botão `Pedidos` localizado no header da área do cliente.
+## Comprar produtos
+
+A página inicial exibe todos os produtos disponíveis na loja.
+
+Para adicionar produtos ao carrinho, você pode:
+
+* Informar diretamente a quantidade desejada no card do produto;
+* Utilizar os botões **+** e **−** presentes em cada card para aumentar ou diminuir a quantidade.
+
+## Carrinho
+
+Clique no **ícone de carrinho** localizado no header para visualizar os produtos adicionados.
+
+Ao finalizar a compra:
+
+1. Clique em **Prosseguir**;
+2. Informe o endereço/local de entrega;
+3. Clique em **Confirmar**.
+
+O pedido será enviado ao vendedor.
+
+## Meus Pedidos
+
+Clique na opção **Pedidos** no header para visualizar todo o histórico de compras.
+
+Para cada pedido é possível:
+
+* Visualizar os produtos pertencentes ao pedido através do botão **Ver Produtos**;
+* Avaliar produtos que já foram entregues;
+* Editar o pedido enquanto ele ainda não tiver sido marcado como entregue pelo vendedor;
+* Cancelar o pedido antes da entrega.
+
+## Chat
+
+O cliente pode conversar diretamente com o vendedor clicando no **ícone de chat** localizado no header.
 
 ---
 
-## Resumo de Rotas Úteis
+# Área do Vendedor
 
-| Página | Caminho (URL) |
-| :--- | :--- |
-| Painel do Vendedor | `localhost:3000/` |
-| Login | `localhost:3000/Login` |
-| Cadastro | `localhost:3000/Cadastro` |
-| Home do Cliente | `localhost:3000/HomeCliente` |
+Ao entrar como **Vendedor**, será exibido o painel de gerenciamento da loja.
+
+## Gerenciamento de Produtos
+
+Em cada card de produto é possível:
+
+* Editar o produto através do **ícone de lápis**;
+* Excluir o produto através do **ícone de lixeira**.
+
+Também é possível adicionar novos produtos:
+
+* Pelo botão disponível no **header** em telas maiores;
+* Pelo **menu hambúrguer** em telas menores.
+
+## Mensagens
+
+Na opção **Mensagens**, o vendedor pode:
+
+* Visualizar todas as conversas iniciadas pelos clientes;
+* Responder dúvidas e continuar o atendimento através do chat.
+
+## Pedidos Recebidos
+
+Na opção **Pedidos Recebidos**, o vendedor pode:
+
+* Visualizar todos os pedidos da loja;
+* Ver os produtos pertencentes a cada pedido;
+* Identificar pedidos entregues e não entregues;
+* Marcar um pedido como **Entregue**.
+
+---
+
+# Logout
+
+Tanto clientes quanto vendedores possuem a opção de **Sair (Logout)** disponível no header da aplicação.
+
+Ao realizar o logout, o usuário será redirecionado para a tela de login.

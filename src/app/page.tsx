@@ -89,21 +89,21 @@ export default function HomeVendedor() {
                     {/* Menu telas maiores */}
                     <div className="hidden md:flex items-center gap-3">
                         <Link href="/CadastroProduto">
-                            <button className="flex items-center gap-2 bg-teal-600 text-white px-2 py-2 rounded-lg font-bold hover:bg-teal-700 transition-colors shadow-md">
+                            <button className="flex items-center cursor-pointer gap-2 bg-teal-600 text-white px-2 py-2 rounded-lg font-bold hover:bg-teal-700 transition-colors shadow-md">
                                 <FaPlus />
                                 <span>Adicionar Produto</span>
                             </button>
                         </Link>
 
                         <Link href="/MsgsVendedor">
-                            <button className="flex items-center gap-2 bg-[#F08FAF] text-white border border-gray-300 px-2 py-2 rounded-lg font-semibold hover:bg-[#dc7bad] transition-colors">
+                            <button className="flex items-center cursor-pointer gap-2 bg-[#F08FAF] text-white border border-gray-300 px-2 py-2 rounded-lg font-semibold hover:bg-[#dc7bad] transition-colors">
                                 <FaClipboardList />
                                 <span>Ver Mensagens</span>
                             </button>
                         </Link>
 
                         <Link href="/PedidosVendedor">
-                            <button className="flex items-center gap-2 bg-teal-600 text-white border border-gray-300 px-2 py-2 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
+                            <button className="flex items-center cursor-pointer gap-2 bg-teal-600 text-white border border-gray-300 px-2 py-2 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
                                 <FaBoxOpen />
                                 <span>Pedidos Recebidos</span>
                             </button>
@@ -178,8 +178,8 @@ export default function HomeVendedor() {
                     <div
                         ref={caixaRef}
                         className="
-                                fixed top-0 right-0 z-[800]
-                                h-screen w-[78vw] max-w-[340px]
+                                fixed top-0 right-0 z-800
+                                h-screen w-[78vw] max-w-85
                                 bg-white shadow-2xl
                                 flex flex-col
                                 rounded-l-3xl

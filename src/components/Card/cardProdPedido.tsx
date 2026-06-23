@@ -77,8 +77,7 @@ export default function CardProdPedido({
                         <Image
                             src={img_url}
                             alt={nome}
-                            width={80}
-                            height={80}
+                            fill
                             className="object-contain rounded"
                         />
                     ) : (
@@ -107,7 +106,7 @@ export default function CardProdPedido({
                         ) : !avaliacaoAberta ? (
                             <button
                                 onClick={() => setAvaliacaoAberta(true)}
-                                className="w-1/2 md:w-32 h-10 border-2 bg-[#f86d9bc1] text-white text-lg font-extrabold rounded hover:bg-[#14B8A6] hover:text-white transition-colors"
+                                className="w-1/2 md:w-32 h-10 cursor-pointer border-2 bg-[#f86d9bc1] text-white text-lg font-extrabold rounded hover:bg-[#14B8A6] hover:text-white transition-colors"
                             >
                                 Avaliar
                             </button>
@@ -142,7 +141,7 @@ export default function CardProdPedido({
                                     <button
                                         onClick={enviarAvaliacao} 
                                         disabled={loadingEnvio}
-                                        className="mt-2 w-1/2 h-10 bg-[#f86d9bc1] flex items-center justify-center gap-2 text-white font-extrabold text-base rounded hover:bg-teal-600 transition disabled:opacity-70"
+                                        className="mt-2 w-1/2 cursor-pointer h-10 bg-[#f86d9bc1] flex items-center justify-center gap-2 text-white font-extrabold text-base rounded hover:bg-teal-600 transition disabled:opacity-70"
                                     >
                                         {loadingEnvio ? (
                                             <FaSpinner className="animate-spin" />

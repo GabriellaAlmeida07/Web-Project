@@ -286,14 +286,14 @@ export default function HomeCliente() {
 
                     <div className="flex gap-5">
                         <Link href="/PedidosCliente">
-                            <button className="flex items-center gap-2 bg-teal-600 text-white border border-gray-300 px-2 py-2 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
+                            <button className="flex items-center cursor-pointer gap-2 bg-teal-600 text-white border border-gray-300 px-2 py-2 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
                                 <FaBoxOpen />
                                 <span>Pedidos</span>
                             </button>
                         </Link>
 
                         <IoIosChatboxes
-                            className="text-gray-500 mt-2 hover:text-gray-600"
+                            className="text-gray-500 mt-2 cursor-pointer hover:text-gray-600"
                             size={30}
                             onClick={() => {
                                 setIsOpenChat(true);
@@ -372,7 +372,7 @@ export default function HomeCliente() {
                             {/* Voltar */}
                             <div className="p-2">
                                 <button
-                                    className="w-24 shrink-0 h-10 mt-2 flex items-center justify-center gap-2 font-semibold bg-[#F08FAF] text-white rounded"
+                                    className="w-24 shrink-0 cursor-pointer h-10 mt-2 flex items-center justify-center gap-2 font-semibold bg-[#F08FAF] text-white rounded"
                                     onClick={() => {
                                         setIsOpen(false);
                                     }}
@@ -434,7 +434,7 @@ export default function HomeCliente() {
                                                                         produto.preco
                                                                     )
                                                                 }
-                                                                className="w-7 h-7 flex items-center disabled:opacity-50 justify-center border-2 border-[#F08FAF] text-black rounded select-none"
+                                                                className="w-7 h-7 flex items-center cursor-pointer disabled:opacity-50 justify-center border-2 border-[#F08FAF] text-black rounded select-none"
                                                             >
                                                                 −
                                                             </button>
@@ -518,7 +518,7 @@ export default function HomeCliente() {
                                                                         produto.preco
                                                                     )
                                                                 }
-                                                                className="w-7 h-7 flex items-center disabled:opacity-50 justify-center border-2 border-[#F08FAF] text-black rounded select-none"
+                                                                className="w-7 h-7 flex items-center cursor-pointer disabled:opacity-50 justify-center border-2 border-[#F08FAF] text-black rounded select-none"
                                                             >
                                                                 +
                                                             </button>
@@ -557,7 +557,7 @@ export default function HomeCliente() {
                                             <button
                                                 disabled={loadingSubmit}
                                                 onClick={handleExcluir}
-                                                className="w-32 h-10 bg-red-400 text-white rounded"
+                                                className="w-32 h-10 cursor-pointer bg-red-400 text-white rounded"
                                             >
                                                 Excluir
                                             </button>
@@ -566,7 +566,7 @@ export default function HomeCliente() {
                                                 onClick={() =>
                                                     setProsseguir(true)
                                                 }
-                                                className="w-32 h-10 bg-teal-600 hover:bg-teal-700 flex items-center justify-center gap-2 text-white rounded"
+                                                className="w-32 h-10 cursor-pointer bg-teal-600 hover:bg-teal-700 flex items-center justify-center gap-2 text-white rounded"
                                             >
                                                 Prosseguir
                                             </button>
@@ -582,7 +582,7 @@ export default function HomeCliente() {
                                 {/* Voltar */}
                                 <div className="p-2">
                                     <button
-                                        className="w-24 shrink-0 h-10 mt-2 flex items-center justify-center gap-2 font-semibold bg-[#F08FAF] text-white rounded"
+                                        className="w-24 cursor-pointer shrink-0 h-10 mt-2 flex items-center justify-center gap-2 font-semibold bg-[#F08FAF] text-white rounded"
                                         onClick={() => {
                                             setProsseguir(false);
                                         }}
@@ -639,7 +639,7 @@ export default function HomeCliente() {
                                     <button
                                         onClick={handleSubmit}
                                         disabled={loadingSubmit}
-                                        className="w-full h-11 bg-teal-600 hover:bg-teal-700 text-white rounded font-semibold flex items-center justify-center gap-2"
+                                        className="w-full h-11 bg-teal-600 cursor-pointer hover:bg-teal-700 text-white rounded font-semibold flex items-center justify-center gap-2"
                                     >
                                         {loadingSubmit ? (
                                             <>
@@ -665,7 +665,7 @@ export default function HomeCliente() {
                 >
                     <div className="p-2">
                         <button
-                            className="w-24 h-10 flex items-center justify-center gap-2 font-semibold bg-[#F08FAF] text-white rounded"
+                            className="w-24 h-10 cursor-pointer flex items-center justify-center gap-2 font-semibold bg-[#F08FAF] text-white rounded"
                             onClick={() => {
                                 setIsOpenChat(false);
                             }}
@@ -728,7 +728,7 @@ export default function HomeCliente() {
                         <button
                             onClick={enviarMsg}
                             disabled={sendingMsg}
-                            className="bg-teal-600 hover:bg-teal-700 disabled:bg-gray-600 text-white px-4 py-2 rounded"
+                            className="bg-teal-600 cursor-pointer hover:bg-teal-700 disabled:bg-gray-600 text-white px-4 py-2 rounded"
                         >
                             <GrSend size={22} />
                         </button>

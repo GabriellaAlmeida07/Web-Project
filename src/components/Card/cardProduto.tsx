@@ -156,7 +156,7 @@ export default function CardProduto({
                             <div className="flex items-center w-32 gap-2 bg-teal-600 rounded-lg shadow px-2 py-1">
                                 <button
                                     onClick={diminuir}
-                                    className="w-7 h-7 bg-teal-700 text-white rounded"
+                                    className="w-7 h-7 cursor-pointer bg-teal-700 text-white rounded"
                                 >
                                     −
                                 </button>
@@ -191,7 +191,7 @@ export default function CardProduto({
 
                                 <button
                                     onClick={aumentar}
-                                    className="w-7 h-7 bg-teal-700 text-white rounded"
+                                    className="w-7 h-7 cursor-pointer bg-teal-700 text-white rounded"
                                 >
                                     +
                                 </button>
@@ -204,14 +204,14 @@ export default function CardProduto({
                                 {/* Chamando a função ao clicar */}
                                 <button
                                     onClick={editarProduto}
-                                    className="w-10 h-10 flex items-center justify-center bg-teal-600 text-white rounded hover:bg-teal-700"
+                                    className="w-10 h-10 cursor-pointer flex items-center justify-center bg-teal-600 text-white rounded hover:bg-teal-700"
                                 >
                                     <FaPen />
                                 </button>
 
                                 <button
                                     onClick={() => setShowConfirmacao(true)}
-                                    className="w-10 h-10 flex items-center justify-center bg-red-400 text-white rounded hover:bg-red-500"
+                                    className="w-10 h-10 cursor-pointer flex items-center justify-center bg-red-400 text-white rounded hover:bg-red-500"
                                 >
                                     <FaTrash />
                                 </button>

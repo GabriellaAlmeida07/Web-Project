@@ -334,7 +334,7 @@ export default function CardPedido({ pedido, tipo }: Props) {
                 <div className="text-base flex justify-between items-center mb-4 gap-3">
                     <button
                         onClick={() => setIsOpen(true)}
-                        className="px-4 py-2 bg-gray-400 hover:bg-gray-700 transition font-semibold text-white rounded shrink-0"
+                        className="px-4 py-2 cursor-pointer bg-gray-400 hover:bg-gray-700 transition font-semibold text-white rounded shrink-0"
                     >
                         Ver produtos
                     </button>
@@ -355,14 +355,14 @@ export default function CardPedido({ pedido, tipo }: Props) {
                             <div className="flex mt-3 gap-2">
                                 <button
                                     onClick={() => setShowConfirmacao(true)}
-                                    className="w-full h-10 bg-red-400 hover:bg-red-500 transition rounded font-semibold text-white"
+                                    className="w-full h-10 cursor-pointer bg-red-400 hover:bg-red-500 transition rounded font-semibold text-white"
                                 >
                                     Cancelar
                                 </button>
 
                                 <button
                                     onClick={abrirEdicao}
-                                    className="w-full h-10 bg-teal-600 hover:bg-teal-700 transition rounded font-semibold text-white"
+                                    className="w-full h-10 cursor-pointer bg-teal-600 hover:bg-teal-700 transition rounded font-semibold text-white"
                                 >
                                     Editar
                                 </button>
@@ -374,7 +374,7 @@ export default function CardPedido({ pedido, tipo }: Props) {
                             <button
                                 onClick={marcarComoEntregue}
                                 disabled={loadingEntregue}
-                                className="w-full mt-3 h-10 bg-teal-600 flex flex-row items-center justify-center gap-2 hover:bg-teal-700 transition rounded font-semibold text-white"
+                                className="w-full mt-3 cursor-pointer h-10 bg-teal-600 flex flex-row items-center justify-center gap-2 hover:bg-teal-700 transition rounded font-semibold text-white"
                             >
                                 {loadingEntregue ? (
                                     <>
@@ -403,21 +403,21 @@ export default function CardPedido({ pedido, tipo }: Props) {
                             onClick={() => {
                                 setEditando(false);
                             }}
-                            className="w-24 h-10 text-base disabled:opacity-50 flex items-center justify-center gap-2 font-semibold bg-[#F08FAF] text-white rounded"
+                            className="w-24 h-10 cursor-pointer text-base disabled:opacity-50 flex items-center justify-center gap-2 font-semibold bg-[#F08FAF] text-white rounded"
                         >
                             <IoArrowBackOutline size={20} />
                             Voltar
                         </button>
                         <button
                             onClick={() => setEscolherProduto(true)}
-                            className="w-36 h-10 flex items-center justify-center gap-1 font-semibold bg-slate-400 text-sm text-white rounded"
+                            className="w-36 h-10 cursor-pointer flex items-center justify-center gap-1 font-semibold bg-slate-400 text-sm text-white rounded"
                         >
                             <IoMdAdd size={15} />
                             Adicionar produto
                         </button>
                         <button
                             onClick={abrirEdicaoEndereco}
-                            className="w-36 h-10 flex items-center justify-center gap-0 md:gap-1 font-semibold bg-teal-600 text-sm text-white rounded"
+                            className="w-36 h-10 flex cursor-pointer items-center justify-center gap-0 md:gap-1 font-semibold bg-teal-600 text-sm text-white rounded"
                         >
                             <IoLocationSharp size={15} />
                             Editar Endereço
@@ -474,7 +474,7 @@ export default function CardPedido({ pedido, tipo }: Props) {
                                                             "Produto removido do seu pedido"
                                                         );
                                                     }}
-                                                    className="text-red-600 font-medium text-sm"
+                                                    className="text-red-600 cursor-pointer font-medium text-sm"
                                                 >
                                                     Devolver produto ao estoque
                                                 </button>
@@ -493,7 +493,7 @@ export default function CardPedido({ pedido, tipo }: Props) {
                                                                 produto.preco
                                                             )
                                                         }
-                                                        className="w-7 h-7 flex items-center justify-center border-2 border-[#F08FAF] rounded"
+                                                        className="w-7 h-7 cursor-pointer flex items-center justify-center border-2 border-[#F08FAF] rounded"
                                                     >
                                                         −
                                                     </button>
@@ -526,7 +526,7 @@ export default function CardPedido({ pedido, tipo }: Props) {
                                                                 produto.preco
                                                             )
                                                         }
-                                                        className="w-7 h-7 flex items-center justify-center border-2 border-[#F08FAF] rounded"
+                                                        className="w-7 h-7 cursor-pointer flex items-center justify-center border-2 border-[#F08FAF] rounded"
                                                     >
                                                         +
                                                     </button>
@@ -570,14 +570,14 @@ export default function CardPedido({ pedido, tipo }: Props) {
                                             setPedidoEditando(null);
                                             setEditando(false);
                                         }}
-                                        className="w-1/2 h-10 bg-red-400 text-white rounded"
+                                        className="w-1/2 h-10 cursor-pointer bg-red-400 text-white rounded"
                                     >
                                         Cancelar
                                     </button>
 
                                     <button
                                         type="submit"
-                                        className="w-1/2 h-11 bg-teal-600 hover:bg-teal-700 text-white rounded font-semibold flex items-center justify-center gap-2"
+                                        className="w-1/2 h-11 bg-teal-600 cursor-pointer hover:bg-teal-700 text-white rounded font-semibold flex items-center justify-center gap-2"
                                     >
                                         {loadingEdicao ? (
                                             <>
@@ -600,7 +600,7 @@ export default function CardPedido({ pedido, tipo }: Props) {
                 <div className="fixed flex flex-col top-1/2 left-1/2 overflow-hidden -translate-x-1/2 -translate-y-1/2 bg-white h-4/5 w-[92%] max-w-[800px] p-3 z-[1000] shadow-2xl">
                     <button
                         onClick={() => setEscolherProduto(false)}
-                        className="w-24 h-10 flex items-center justify-center gap-2 font-semibold bg-[#F08FAF] text-white rounded"
+                        className="w-24 h-14 cursor-pointer flex items-center justify-center gap-2 font-semibold bg-[#F08FAF] text-white rounded"
                     >
                         <IoArrowBackOutline size={20} />
                         Voltar
@@ -659,14 +659,19 @@ export default function CardPedido({ pedido, tipo }: Props) {
                                     setEditandoEndereco(false),
                                         setNovoEndereco("");
                                 }}
-                                className="w-1/2 bg-gray-300 p-2 rounded"
+                                className="w-1/2 bg-gray-300 cursor-pointer p-2 rounded"
                             >
                                 Cancelar
                             </button>
 
                             <button
-                                onClick={() => setEditandoEndereco(false)}
-                                className="w-1/2 bg-teal-600 flex flex-row items-center justify-center gap-2 text-white p-2 rounded"
+                                onClick={() => {
+                                    setEditandoEndereco(false),
+                                        toast.info(
+                                            "Clique em Editar para salvar a alteração"
+                                        );
+                                }}
+                                className="w-1/2 bg-teal-600 cursor-pointer flex flex-row items-center justify-center gap-2 text-white p-2 rounded"
                             >
                                 Confirmar
                             </button>
@@ -714,7 +719,10 @@ export default function CardPedido({ pedido, tipo }: Props) {
                                             onChangeQtd={() => {}}
                                             // O botão de avaliar só fica visível se o pedido já foi entregue
                                             exibirAvaliacao={pedido.entregue}
-                                            idClientePedido={pedido.id_cliente || pedido.Usuario?.id}
+                                            idClientePedido={
+                                                pedido.id_cliente ||
+                                                pedido.Usuario?.id
+                                            }
                                         />
                                     );
                                 })}

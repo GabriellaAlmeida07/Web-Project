@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { PedidoController } from "@/controllers/pedido.controller";
+import { initDb } from "@/models/alteracoes";
 
 const secret = process.env.AUTH_SECRET as string;
 

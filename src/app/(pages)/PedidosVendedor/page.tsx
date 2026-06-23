@@ -49,7 +49,7 @@ export default function PedidosVendedor() {
                     </div>
 
                     <Link href="/">
-                        <button className="flex items-center gap-2 bg-teal-600 text-white px-2 py-2 rounded-lg font-bold hover:bg-teal-600 transition-colors shadow-md">
+                        <button className="flex items-center cursor-pointer gap-2 bg-teal-600 text-white px-2 py-2 rounded-lg font-bold hover:bg-teal-600 transition-colors shadow-md">
                             <IoStorefrontOutline size={25} />
                             <span>Painel do Vendedor</span>
                         </button>

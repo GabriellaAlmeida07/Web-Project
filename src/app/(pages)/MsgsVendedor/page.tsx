@@ -111,7 +111,7 @@ export default function MsgsVendedor() {
                 </div>
 
                 <Link href="/">
-                    <button className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-2 py-2 rounded-lg font-bold hover:bg-teal-600 transition-colors shadow-md">
+                    <button className="flex items-center gap-2 cursor-pointer bg-teal-600 hover:bg-teal-700 text-white px-2 py-2 rounded-lg font-bold hover:bg-teal-600 transition-colors shadow-md">
                         <IoStorefrontOutline size={25} />
                         <span>Painel do Vendedor</span>
                     </button>
@@ -147,7 +147,7 @@ export default function MsgsVendedor() {
                     <div className="p-2">
                         <button
                             onClick={() => setIsOpenChat(false)}
-                            className="bg-[#F08FAF] text-white px-4 py-2 rounded flex items-center gap-2"
+                            className="bg-[#F08FAF] cursor-pointer text-white px-4 py-2 rounded flex items-center gap-2"
                         >
                             <IoArrowBackOutline />
                             Voltar
@@ -207,7 +207,7 @@ export default function MsgsVendedor() {
                         <button
                             onClick={enviarMsg}
                             disabled={sendingMsg}
-                            className="bg-teal-600 hover:bg-teal-700 disabled:bg-gray-600 text-white px-4 py-2 rounded"
+                            className="bg-teal-600 cursor-pointer hover:bg-teal-700 disabled:bg-gray-600 text-white px-4 py-2 rounded"
                         >
                             <GrSend size={22} />
                         </button>

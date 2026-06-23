@@ -203,7 +203,7 @@ export default function Cadastro() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-teal-600 text-white py-3 text-lg flex items-center justify-center gap-2 rounded-lg font-semibold mt-4 hover:bg-teal-600 transition-colors shadow-sm"
+                        className="w-full bg-teal-600 cursor-pointer text-white py-3 text-lg flex items-center justify-center gap-2 rounded-lg font-semibold mt-4 hover:bg-teal-600 transition-colors shadow-sm"
                     >
                         {loading ? (
                             <>
@@ -221,7 +221,7 @@ export default function Cadastro() {
                     {/* Permite redirecionar para outra página */}
                     <Link
                         href="/Login"
-                        className="text-teal-600 font-semibold hover:underline"
+                        className="text-teal-600 cursor-pointer font-semibold hover:underline"
                     >
                         Faça login
                     </Link>

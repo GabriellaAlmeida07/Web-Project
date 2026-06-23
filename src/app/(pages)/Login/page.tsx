@@ -119,7 +119,7 @@ export default function Login() {
                     <button
                         disabled={loading}
                         type="submit"
-                        className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold mt-2 hover:bg-teal-700 transition-colors shadow-sm disabled:opacity-70"
+                        className="w-full cursor-pointer bg-teal-600 text-white py-3 rounded-lg font-semibold mt-2 hover:bg-teal-700 transition-colors shadow-sm disabled:opacity-70"
                     >
                         {loading ? "Acessando..." : "Acessar"}
                     </button>
@@ -130,7 +130,7 @@ export default function Login() {
                     Não tem uma conta?{" "}
                     <Link
                         href="/Cadastro"
-                        className="text-teal-600 font-semibold hover:underline"
+                        className="text-teal-600 cursor-pointer font-semibold hover:underline"
                     >
                         Cadastre-se
                     </Link>

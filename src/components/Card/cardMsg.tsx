@@ -21,7 +21,7 @@ export default function CardMsg({ loading, cliente, onResponder }: MsgProps) {
             {/* Botão responder */}
             <button
                 onClick={onResponder}
-                className="bg-[#F08FAF] flex flex-row gap-2 items-center justify-center text-white py-2 rounded mt-2 mx-6 font-extrabold"
+                className="bg-[#F08FAF] cursor-pointer flex flex-row gap-2 items-center justify-center text-white py-2 rounded mt-2 mx-6 font-extrabold"
             >
                 {loading ? (
                     <>
