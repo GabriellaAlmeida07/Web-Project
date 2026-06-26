@@ -23,7 +23,7 @@ export default function CardProduto({
     const [digitando, setDigitando] = useState<string | null>(null);
     const [loadingExclusao, setLoadingExclusao] = useState(false);
     const [showConfirmacao, setShowConfirmacao] = useState(false);
-    
+
     // Guarda a média de estrelas deste produto específico
     const [mediaAvaliacao, setMediaAvaliacao] = useState<number>(0);
     const [totalAvaliacoes, setTotalAvaliacoes] = useState<number>(0);
@@ -56,6 +56,8 @@ export default function CardProduto({
     function aumentar() {
         if (quantidade < qtd_estoque) {
             onChangeQtd(quantidade + 1);
+        } else {
+            toast.error("Estoque insuficiente");
         }
     }
 
@@ -181,6 +183,10 @@ export default function CardProduto({
                                                 onChangeQtd
                                             ) {
                                                 onChangeQtd(valor);
+                                            } else if (valor > qtd_estoque) {
+                                                toast.error(
+                                                    "Estoque insuficiente"
+                                                );
                                             }
 
                                             setDigitando(null);

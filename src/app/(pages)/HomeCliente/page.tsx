@@ -76,7 +76,7 @@ export default function HomeCliente() {
         preco = Number(preco);
 
         if (novaQtd > qtd_estoque) {
-            console.log("Quantidade insuficiente");
+            toast.error("Estoque insuficiente");
             return;
         }
 
